@@ -1,11 +1,11 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def welcome_page():
-    return "Доборо пожаловать на сайт для поиска работы подросткам"
+    return render_template("welcome_page.html")
 
 
 if __name__ == "__main__":
