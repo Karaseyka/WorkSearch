@@ -1,3 +1,4 @@
+import flask_login
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -78,14 +79,14 @@ def enter_get():
 @app.route("/profile")
 @login_required
 def profile():
-    return render_template("profile.html")
-
-
-def redirect_to_enter(url):
-    if flask_login.current_user.is_authenticated:
-        return render_template("enter.html")
+    if flask_login.current_user.role == "option1":
+        return render_template("profile_child.html", current_user=flask_login.current_user)
+    elif flask_login.current_user.role == "option2":
+        return render_template("profile_parent.html", current_user=flask_login.current_user)
+    elif flask_login.current_user.role == "option3":
+        return render_template("profile_hh.html", current_user=flask_login.current_user)
     else:
-        return render_template(url)
+        return "Технические шоколадки"
 
 
 if __name__ == "__main__":

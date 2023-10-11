@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-3 row">
+            <label for="staticName" class="col-sm-2 col-form-label">Имя</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="staticName" value={{current_user.name}}>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value={{current_user.email}}>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="staticRole" class="col-sm-2 col-form-label">Роль</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="staticRole" value="Ребёнок">
+            </div>
+        </div>
+        {% block main %} {% endblock %}
+{% endblock %}
