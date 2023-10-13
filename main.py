@@ -1,5 +1,7 @@
+from io import BytesIO
+
 import flask_login
-from flask import Flask, render_template, request, redirect, make_response
+from flask import Flask, render_template, request, redirect, make_response, send_file
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import BLOB
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -82,16 +84,16 @@ def enter_get():
 def profile():
     if request.method == 'POST':
         file = request.files["file"]
-        if file.filename[-4::] == ".png":
+        if file.filename[-4::] == ".pdf":
             try:
                 file_bite = file.read()
                 flask_login.current_user.resume = file_bite
                 db.session.commit()
-                return "Успещно"
+                return "Успешно"
             except:
                 return "Неудалось добавить файл"
         else:
-            return "Нужен .png формат"
+            return "Нужен .pdf формат"
     else:
         if flask_login.current_user.role == "option1":
             return render_template("profile_child.html", current_user=flask_login.current_user)
@@ -107,9 +109,8 @@ def profile():
 @login_required
 def resume():
     img = flask_login.current_user.resume
-    h = make_response(img)
-    h.headers['Content-Type'] = 'image/png'
-    return h
+    return send_file(BytesIO(img),
+                     download_name="8488.pdf", as_attachment=True)
 
 
 if __name__ == "__main__":
