@@ -1,6 +1,7 @@
 import flask_login
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, make_response
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import BLOB
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required
 
@@ -17,6 +18,7 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String)
     email = db.Column(db.String, unique=True)
     role = db.Column(db.String)
+    resume = db.Column(BLOB, default=None)
 
     def __repr__(self):
         return "<User %r>" % self.id
@@ -38,7 +40,6 @@ def registration_post():
         pw = generate_password_hash(request.form["password"])
         user = User(password=str(pw), name=request.form["name"],
                     email=request.form["email"], role=request.form['radios'])
-
         try:
             db.session.add(user)
             db.session.commit()
@@ -76,17 +77,39 @@ def enter_get():
     return render_template("enter.html")
 
 
-@app.route("/profile")
+@app.route("/profile", methods=["POST", "GET"])
 @login_required
 def profile():
-    if flask_login.current_user.role == "option1":
-        return render_template("profile_child.html", current_user=flask_login.current_user)
-    elif flask_login.current_user.role == "option2":
-        return render_template("profile_parent.html", current_user=flask_login.current_user)
-    elif flask_login.current_user.role == "option3":
-        return render_template("profile_hh.html", current_user=flask_login.current_user)
+    if request.method == 'POST':
+        file = request.files["file"]
+        if file.filename[-4::] == ".png":
+            try:
+                file_bite = file.read()
+                flask_login.current_user.resume = file_bite
+                db.session.commit()
+                return "Успещно"
+            except:
+                return "Неудалось добавить файл"
+        else:
+            return "Нужен .png формат"
     else:
-        return "Технические шоколадки"
+        if flask_login.current_user.role == "option1":
+            return render_template("profile_child.html", current_user=flask_login.current_user)
+        elif flask_login.current_user.role == "option2":
+            return render_template("profile_parent.html", current_user=flask_login.current_user)
+        elif flask_login.current_user.role == "option3":
+            return render_template("profile_hh.html", current_user=flask_login.current_user)
+        else:
+            return "Технические шоколадки"
+
+
+@app.route("/resume", methods=["GET"])
+@login_required
+def resume():
+    img = flask_login.current_user.resume
+    h = make_response(img)
+    h.headers['Content-Type'] = 'image/png'
+    return h
 
 
 if __name__ == "__main__":

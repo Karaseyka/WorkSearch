@@ -18,5 +18,18 @@
                 <input type="text" readonly class="form-control-plaintext" id="staticRole" value="Ребёнок">
             </div>
         </div>
-        {% block main %} {% endblock %}
+{% block main %}
+<form method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Расскажите о себе</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="file" class="form-label">Или прикрепите резюме</label>
+        <input class="form-control" type="file" name="file" id="file">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<button onclick="window.location.href = '/resume'"  class="btn btn-outline-primary">Просмотр</button>
+{% endblock %}
 {% endblock %}
