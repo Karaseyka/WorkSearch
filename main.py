@@ -21,6 +21,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String, unique=True)
     role = db.Column(db.String)
     resume = db.Column(BLOB, default=None)
+    resumetxt = db.Column(db.String)
 
     def __repr__(self):
         return "<User %r>" % self.id
@@ -84,16 +85,24 @@ def enter_get():
 def profile():
     if request.method == 'POST':
         file = request.files["file"]
-        if file.filename[-4::] == ".pdf":
-            try:
-                file_bite = file.read()
-                flask_login.current_user.resume = file_bite
-                db.session.commit()
-                return "Успешно"
-            except:
-                return "Неудалось добавить файл"
-        else:
-            return "Нужен .pdf формат"
+        txt = request.form["filetxt"]
+        if file:
+            if file.filename[-4::] == ".pdf":
+                try:
+                    file_bite = file.read()
+                    flask_login.current_user.resumetxt = None
+                    flask_login.current_user.resume = file_bite
+                    db.session.commit()
+                    return "Успешно"
+                except:
+                    return "Неудалось добавить файл"
+            else:
+                return "Нужен .pdf формат"
+        elif txt:
+            flask_login.current_user.resume = None
+            flask_login.current_user.resumetxt = txt
+            db.session.commit()
+            return "Успешно"
     else:
         if flask_login.current_user.role == "option1":
             return render_template("profile_child.html", current_user=flask_login.current_user)
@@ -109,8 +118,14 @@ def profile():
 @login_required
 def resume():
     img = flask_login.current_user.resume
-    return send_file(BytesIO(img),
-                     download_name="8488.pdf", as_attachment=True)
+    txt = flask_login.current_user.resumetxt
+    if img:
+        return send_file(BytesIO(img),
+                         download_name="resume.pdf", as_attachment=True)
+    elif txt:
+        return txt
+    else:
+        return "Резюме не найдено"
 
 
 if __name__ == "__main__":
