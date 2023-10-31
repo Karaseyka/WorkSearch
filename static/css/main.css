@@ -54,3 +54,55 @@ div {
     object-fit: cover;
 }
 
+/* дизайн profile_children */
+.pro-child-text {
+    padding: 2px 18px;
+    font-size: 36px;
+}
+
+.pro-child-font {
+    text-align: center;
+}
+
+.pro-child-mainform {
+    padding: 1px;
+    margin: 8px 10px;
+    background-color: rgba(221, 221, 221, 0.25);
+    border-radius: 5%;
+}
+
+.pro-child-form {
+    background-color: rgba(221, 221, 221, 0.25);
+    border-radius: 5%;
+}
+
+.pro-child-line {
+    padding: 0px;
+    border-bottom: 1px solid silver;
+}
+
+.right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.pro-child-btns {
+    display: flex;
+    justify-content: center;
+}
+
+.pro-btn {
+    display: block;
+    max-width: 150px;
+    min-width: 100px;
+}
+
+.btn-submit {
+    margin: 3px;
+    justify-content: center;
+    max-height: 40px;
+}
+
+.btn-show {
+    margin: 3px;
+}
