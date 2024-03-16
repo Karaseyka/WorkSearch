@@ -86,10 +86,14 @@ def profile():
     if request.method == 'POST':
         file = request.files["file"]
         txt = request.form["filetxt"]
+        name = request.form["staticName"]
+        email = request.form["staticEmail"]
         if file:
             if file.filename[-4::] == ".pdf":
                 try:
                     file_bite = file.read()
+                    flask_login.current_user.name = name
+                    flask_login.current_user.email = email
                     flask_login.current_user.resumetxt = None
                     flask_login.current_user.resume = file_bite
                     db.session.commit()
@@ -98,11 +102,17 @@ def profile():
                     return "Неудалось добавить файл"
             else:
                 return "Нужен .pdf формат"
+        elif len(txt) == 0:
+            flask_login.current_user.name = name
+            flask_login.current_user.email = email
+            db.session.commit()
+            return "Успешно"
         elif txt:
             flask_login.current_user.resume = None
             flask_login.current_user.resumetxt = txt
             db.session.commit()
             return "Успешно"
+
     else:
         if flask_login.current_user.role == "option1":
             return render_template("profile_child.html", current_user=flask_login.current_user)
