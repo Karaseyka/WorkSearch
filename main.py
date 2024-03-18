@@ -1,3 +1,4 @@
+import json
 from io import BytesIO
 
 import flask_login
@@ -19,6 +20,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String)
     name = db.Column(db.String)
     email = db.Column(db.String, unique=True)
+    contacts = db.Column(db.String)
     role = db.Column(db.String)
     resume = db.Column(BLOB, default=None)
     resumetxt = db.Column(db.String)
@@ -85,7 +87,7 @@ def enter_get():
 @app.route("/profile", methods=["POST", "GET"])
 @login_required
 def profile():
-    # Проверяем пост запрос лиюо гет
+    # Проверяем пост запрос либо гет
     if request.method == 'POST':
         # Проверяем чей аккаунт (родителя, чайлда, хэдхантера)
         if flask_login.current_user.role == "option1":
@@ -135,7 +137,14 @@ def profile():
         elif flask_login.current_user.role == "option2":
             return render_template("profile_parent.html", current_user=flask_login.current_user)
         elif flask_login.current_user.role == "option3":
-            return render_template("profile_hh.html", current_user=flask_login.current_user)
+            us_contacts = flask_login.current_user.contacts
+            print(us_contacts)
+            if us_contacts is not None:
+                super_cont = us_contacts.split(', ')
+            else:
+                super_cont = []
+            print(super_cont, us_contacts)
+            return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont)
         else:
             return "Технические шоколадки"
 

@@ -12,38 +12,139 @@
                     <div class="row">
                         <div class="pro-child-mainform col-7">
                             <div class="mb-3 row pro-child-line">
-                                <label for="staticName" class="col-sm-2 col-form-label">Имя</label>
+                                <label for="staticName"
+                                       class="col-sm-2 col-form-label">Имя</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control-plaintext" name="staticName" id="staticName"
+                                    <input type="text"
+                                           class="form-control-plaintext"
+                                           name="staticName" id="staticName"
                                            value={{current_user.name}}>
                                 </div>
                             </div>
                             <div class="mb-3 row pro-child-line">
-                                <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                                <label for="staticEmail"
+                                       class="col-sm-2 col-form-label">Email</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control-plaintext" name="staticEmail"
-                                           id="staticEmail" value={{current_user.email}}>
+                                    <input type="text"
+                                           class="form-control-plaintext"
+                                           name="staticEmail"
+                                           id="staticEmail"
+                                           value={{current_user.email}}>
                                 </div>
                             </div>
                             <div class="mb-3 row pro-child-line">
-                                <label for="staticRole" class="col-sm-2 col-form-label">Роль</label>
+                                <label for="staticRole"
+                                       class="col-sm-2 col-form-label">Роль</label>
                                 <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="staticRole"
+                                    <input type="text" readonly
+                                           class="form-control-plaintext"
+                                           id="staticRole"
                                            value="Работодатель">
                                 </div>
                             </div>
-                            <button onclick="window.location.href = '/addvacancy'" type="button" class="left btn btn-outline-primary btn-show pro-btn">Добавить вакансию</button>
+                            <div class="mb-3 row pro-child-line">
+                                <label for="staticRole"
+                                       class="col-sm-2 col-form-label">
+                                    Контакты
+                                </label>
+                                {% if current_user.contacts == None %}
+                                <div class="col-sm-10">
+                                    <input type="text" readonly
+                                           class="form-control-plaintext"
+                                           id="staticRole"
+                                           value="Ваши контакты не указаны">
+
+                                </div>
+                                {% else %}
+                                <div class="col-sm-10">
+                                    {% for e in contacts %}
+                                    <input type="text" readonly
+                                           class="form-control-plaintext"
+                                           id="staticRole"
+                                           value="{{ e }}">
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <button onclick="window.location.href = '/addvacancy'"
+                                    type="button"
+                                    class="left btn btn-outline-primary btn-show pro-btn">
+                                Добавить вакансию
+                            </button>
+
+                            <!-- Кнопка-триггер модального окна -->
+                            <button type="button"
+                                    class="left btn btn-outline-success btn-show pro-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">
+                                Добавить контакты
+                            </button>
+
+                            <!-- Модальное окно -->
+                            <div class="modal fade" id="exampleModal"
+                                 tabindex="-1"
+                                 aria-labelledby="exampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title"
+                                                id="exampleModalLabel">
+                                                Добавление ваших контактов</h5>
+                                            <button type="button"
+                                                    class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Закрыть"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Введите название соцсети и ваш
+                                            номер/имя, чтобы с вами могли
+                                            связаться
+
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <div>
+                                                    <p>Соц-сеть</p>
+                                                    <input type="text" id="net" style="" placeholder="Введите название соц-сети">
+                                                </div>
+                                                <div>
+                                                    <p>Имя или номер</p>
+                                                    <input type="text" id="way" style="" placeholder="Введите ваше имя">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button"
+                                                    class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">
+                                                Закрыть
+                                            </button>
+                                            <button type="submit" id="save"
+                                                    class="btn btn-primary">
+                                                Сохранить изменения
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
-                        <div class="pro-child-mainform col-3" style="background-color: white;">
+                        <div class="pro-child-mainform col-3"
+                             style="background-color: white;">
                             <div class="pro-child-form">
                                 <div class="mb-4 row"></div>
                                 <div class="pro-child-btns">
-                                    <button type="submit" class="btn btn-primary btn-submit pro-btn">Сохранить</button>
+                                    <button type="submit"
+                                            class="btn btn-primary btn-submit pro-btn">
+                                        Сохранить
+                                    </button>
                                 </div>
                                 <p class="pro-child-font">
-                                    Нажимая на кнопку "Сохранить", вы принимаете правила пользовательского соглашения и
-                                    политики конфиденциальности, а также даете согласие на обработку персональных данных
+                                    Нажимая на кнопку "Сохранить", вы
+                                    принимаете правила пользовательского
+                                    соглашения и
+                                    политики конфиденциальности, а также даете
+                                    согласие на обработку персональных данных
                                 </p>
                             </div>
                         </div>
