@@ -22,7 +22,7 @@ class User(db.Model, UserMixin):
     role = db.Column(db.String)
     resume = db.Column(BLOB, default=None)
     resumetxt = db.Column(db.String)
-    child\
+    child \
         = db.Column(db.String)
 
     def __repr__(self):
@@ -158,6 +158,12 @@ def resume():
 @login_required
 def vacancies():
     return render_template("vacancies.html")
+
+
+@app.route("/addvacancy", methods=["GET"])
+@login_required
+def add_vacancies():
+    return render_template("add_vacancy.html")
 
 
 @app.errorhandler(401)
