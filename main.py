@@ -22,6 +22,8 @@ class User(db.Model, UserMixin):
     role = db.Column(db.String)
     resume = db.Column(BLOB, default=None)
     resumetxt = db.Column(db.String)
+    child\
+        = db.Column(db.String)
 
     def __repr__(self):
         return "<User %r>" % self.id
@@ -83,35 +85,49 @@ def enter_get():
 @app.route("/profile", methods=["POST", "GET"])
 @login_required
 def profile():
+    # Проверяем пост запрос лиюо гет
     if request.method == 'POST':
-        file = request.files["file"]
-        txt = request.form["filetxt"]
-        name = request.form["staticName"]
-        email = request.form["staticEmail"]
-        if file:
-            if file.filename[-4::] == ".pdf":
-                try:
-                    file_bite = file.read()
-                    flask_login.current_user.name = name
-                    flask_login.current_user.email = email
-                    flask_login.current_user.resumetxt = None
-                    flask_login.current_user.resume = file_bite
-                    db.session.commit()
-                    return "Успешно"
-                except:
-                    return "Неудалось добавить файл"
-            else:
-                return "Нужен .pdf формат"
-        elif len(txt) == 0:
+        # Проверяем чей аккаунт (родителя, чайлда, хэдхантера)
+        if flask_login.current_user.role == "option1":
+            # Действия с изменением данных аккаунта
+            file = request.files["file"]
+            txt = request.form["filetxt"]
+            name = request.form["staticName"]
+            email = request.form["staticEmail"]
+            if file:
+                if file.filename[-4::] == ".pdf":
+                    try:
+                        file_bite = file.read()
+                        flask_login.current_user.name = name
+                        flask_login.current_user.email = email
+                        flask_login.current_user.resumetxt = None
+                        flask_login.current_user.resume = file_bite
+                        db.session.commit()
+                        return "Успешно"
+                    except:
+                        return "Неудалось добавить файл"
+                else:
+                    return "Нужен .pdf формат"
+            elif len(txt) == 0:
+                flask_login.current_user.name = name
+                flask_login.current_user.email = email
+                db.session.commit()
+                return "Успешно"
+            elif txt:
+                flask_login.current_user.resume = None
+                flask_login.current_user.resumetxt = txt
+                db.session.commit()
+                return "Успешно"
+        if flask_login.current_user.role == "option2":
+            name = request.form["staticName"]
+            email = request.form["staticEmail"]
+            child = request.form["child"]
             flask_login.current_user.name = name
             flask_login.current_user.email = email
+            flask_login.current_user.child = child
             db.session.commit()
             return "Успешно"
-        elif txt:
-            flask_login.current_user.resume = None
-            flask_login.current_user.resumetxt = txt
-            db.session.commit()
-            return "Успешно"
+
 
     else:
         if flask_login.current_user.role == "option1":
@@ -136,6 +152,17 @@ def resume():
         return txt
     else:
         return "Резюме не найдено"
+
+
+@app.route("/vacancies", methods=["GET"])
+@login_required
+def vacancies():
+    return render_template("vacancies.html")
+
+
+@app.errorhandler(401)
+def unauthorized_request(_):
+    return "Для работы с сайтом необходима авторизация"
 
 
 if __name__ == "__main__":
