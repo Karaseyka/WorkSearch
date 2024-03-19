@@ -15,6 +15,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///worksearch.db"
 db_session.global_init("instance/worksearch.db")
 
 manager = LoginManager(app)
+manager.init_app(app)
 db_ses = db_session.create_session()
 
 
@@ -55,7 +56,7 @@ def enter_post():
     login = request.form.get("email")
     pw = request.form.get("password")
     if login and pw:
-        user = User.query.filter_by(email=login).first()
+        user = db_ses.query(User).filter_by(email=login).first()
         if check_password_hash(user.password, pw):
             login_user(user)
             return render_template("welcome_page.html")

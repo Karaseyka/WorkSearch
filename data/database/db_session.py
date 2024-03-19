@@ -1,9 +1,8 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
-from sqlalchemy.orm import Session
+import sqlalchemy.ext.declarative as dec
 
-SqlAlchemyBase = orm.declarative_base()
-
+SqlAlchemyBase = dec.declarative_base()
 __factory = None
 
 
@@ -27,6 +26,6 @@ def global_init(db_file):
     SqlAlchemyBase.metadata.create_all(engine)
 
 
-def create_session() -> Session:
+def create_session():
     global __factory
     return __factory()

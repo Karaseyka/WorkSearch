@@ -1,5 +1,6 @@
 import sqlalchemy
 from flask_login import UserMixin
+from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
 
 from data.database.db_session import SqlAlchemyBase
@@ -17,5 +18,3 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     child \
         = sqlalchemy.Column(sqlalchemy.String)
 
-    def __repr__(self):
-        return "<User %r>" % self.id
