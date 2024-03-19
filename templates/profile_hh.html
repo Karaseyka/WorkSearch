@@ -74,20 +74,26 @@
                             </div>
                             {% endif %}
                         </div>
+                        <div style="display: flex; justify-content: start;">
+                            <form action="/create_vacancy" method="post">
+                                <button class="btn btn-outline-primary btn-show pro-btn">
+                                    Добавить вакансию
+                                </button>
+                            </form>
 
-                        <button onclick="window.location.href = '/addvacancy'"
-                                type="button"
-                                class="left btn btn-outline-primary btn-show pro-btn">
-                            Добавить вакансию
-                        </button>
+                            <!-- Кнопка-триггер модального окна -->
+                            <button type="button"
+                                    class="left btn btn-outline-success btn-show pro-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">
+                                Добавить контакты
+                            </button>
 
-                        <!-- Кнопка-триггер модального окна -->
-                        <button type="button"
-                                class="left btn btn-outline-success btn-show pro-btn"
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">
-                            Добавить контакты
-                        </button>
+                        </div>
+
+
+
+
 
                         <!-- Модальное окно для ввода контактов -->
                         <div class="modal fade" id="exampleModal"

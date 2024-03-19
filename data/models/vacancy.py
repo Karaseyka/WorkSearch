@@ -12,6 +12,6 @@ class Vacancy(SqlAlchemyBase, UserMixin, SerializerMixin):
     owner = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("user.id"))
     name = sqlalchemy.Column(sqlalchemy.String)
     description = sqlalchemy.Column(sqlalchemy.String)
-    salary = sqlalchemy.Column(sqlalchemy.String)
     minimal_age = sqlalchemy.Column(sqlalchemy.String)
+    salary = sqlalchemy.Column(sqlalchemy.String)
 

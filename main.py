@@ -7,6 +7,8 @@ from flask_login import LoginManager, login_user, login_required
 from flask import request
 from data.database import db_session
 from data.models.user import User
+from data.models.vacancy import Vacancy
+
 
 app = Flask(__name__)
 app.secret_key = 'some key'
@@ -209,16 +211,60 @@ def resume():
         return "Резюме не найдено"
 
 
+@app.route("/create_vacancy", methods=["POST"])
+@login_required
+def new_vacancy():
+    print(12929)
+    return render_template('add_vacancy.html')
+
+
 @app.route("/vacancies", methods=["GET"])
 @login_required
 def vacancies():
     return render_template("vacancies.html")
 
 
-@app.route("/addvacancy", methods=["GET"])
+@app.route("/add_vacancies", methods=["POST", "GET"])
 @login_required
 def add_vacancies():
-    return render_template("add_vacancy.html")
+    print(1818)
+    if request.method == 'GET':
+        name = request.form["name1"]
+        age = request.form["age"]
+        text = request.form["Text1"]
+        salary = request.form["salary"]
+
+        vacanciy = Vacancy()
+        vacanciy.name = name
+        vacanciy.owner = flask_login.current_user.id
+        vacanciy.minimal_age = age
+        vacanciy.description = text
+        vacanciy.salary = salary
+        db_ses.commit()
+        return redirect('/vacancies')
+    else:
+        name = request.form["name1"]
+        age = request.form["age"]
+        text = request.form["Text1"]
+        salary = request.form["salary"]
+        print(name, age, text, salary)
+
+
+        vacanciy = Vacancy()
+        vacanciy.name = name
+        vacanciy.owner = flask_login.current_user.id
+        vacanciy.minimal_age = age
+        vacanciy.description = text
+        vacanciy.salary = salary
+        db_sess = db_session.create_session()
+        db_sess.add(vacanciy)
+        db_sess.commit()
+        if flask_login:
+            flask_login.current_user.works += f', {vacanciy.id}'
+        else:
+            flask_login.current_user.works = f', {vacanciy.id}'
+        db_ses.commit()
+        return redirect('/vacancies')
 
 
 @app.errorhandler(401)

@@ -9,18 +9,18 @@
         </div>
         <div class="col-6 reg-ent-window">
             <h1 style="text-align:center">Создание вакансии</h1>
-            <form method="post" class="main-form">
+            <form action="/add_vacancies" method="post" enctype="multipart/form-data" class="main-form">
 
                 <div class="form-group mb-5">
                     <label>Название профессии</label>
                     <input type="text" class="form-control"
-                           name="name"
+                           name="name1" value=""
                            placeholder="Введите название профессии">
                 </div>
                 <div class="form-group mb-5">
                     <label>Минимальный требуемый возраст</label>
                     <input type="number" class="form-control"
-                           name="name" value="14" min="14">
+                           name="age" value="14" min="14">
                 </div>
 
                 <div class="form-group mb-5">
@@ -31,9 +31,9 @@
                 </div>
 
                 <div class="form-group mb-5">
-                    <label>Минимальный требуемый возраст</label>
+                    <label>Зарплата (сумма в рублях)</label>
                     <input type="number" class="form-control"
-                           name="name" value="0" min="0">
+                           name="salary" value="0" min="0">
                 </div>
 
                 <button type="submit" class="btn btn-primary">Создать</button>

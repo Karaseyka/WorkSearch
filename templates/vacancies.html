@@ -1,12 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-
+    <div class="mb-5 row"></div>
     <div class="row">
         <div class="col-1"></div>
 
         <div class="col-10 pro-child-spare">
-            <div class="mb-1 row pro-child-text">Все вакансии</div>
+            <div class="mb-1 row pro-child-text">Все ваши вакансии</div>
+
+
+            {% for e in vacancies %}
+<!--            V razrabotke  =)  -->
+                <div class="card" style="width: 18rem; backround-color: f6f6f6;">
+                    <div class="card-body">
+                        <h5 class="card-title">Заголовок карточки</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Подзаголовок
+                            карточки</h6>
+                        <p class="card-text">Небольшой пример текста, который
+                            должен основываться на названии карты и составлять
+                            основную часть содержимого карты.</p>
+                        <a href="#" class="card-link">Ссылка карточки</a>
+                        <a href="#" class="card-link">Другая ссылка</a>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
         <div class="col-1"></div>
     </div>
