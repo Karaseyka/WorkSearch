@@ -12,9 +12,10 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     password = sqlalchemy.Column(sqlalchemy.String)
     name = sqlalchemy.Column(sqlalchemy.String)
     email = sqlalchemy.Column(sqlalchemy.String, unique=True)
+    contacts = sqlalchemy.Column(sqlalchemy.String)
     role = sqlalchemy.Column(sqlalchemy.String)
     resume = sqlalchemy.Column(sqlalchemy.BLOB, default=None)
     resumetxt = sqlalchemy.Column(sqlalchemy.String)
     child \
         = sqlalchemy.Column(sqlalchemy.String)
-
+    works = sqlalchemy.Column(sqlalchemy.String)
