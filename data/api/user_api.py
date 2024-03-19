@@ -3,6 +3,7 @@ from flask import jsonify
 
 from main import User
 from ..database import db_session
+from ..models.vacancy import Vacancy
 
 db = db_session.create_session()
 
@@ -22,6 +23,18 @@ def get_user():
             'users':
                 [item.to_dict(only=('id', 'name', 'email', 'role', 'resume', 'resumetxt'))
                  for item in users]
+        }
+    )
+
+@blueprint.route('/api/vacancies')
+def get_vacancies():
+    db_sess = db
+    vacancies = db_sess.query(Vacancy).all()
+    return jsonify(
+        {
+            'vacancies':
+                [item.to_dict(only=('id', 'name', 'description', 'description', 'salary', 'minimal_age'))
+                 for item in vacancies]
         }
     )
 

@@ -120,8 +120,8 @@ def profile():
             return "Успешно"
 
         if flask_login.current_user.role == "option3":
-            print(123)
-
+            name = request.form["name"]
+            email = request.form["email"]
             us_contacts = flask_login.current_user.contacts
             if us_contacts is not None:
                 super_cont = us_contacts.split(', ')
@@ -180,6 +180,18 @@ def add_contact():
             contacts = flask_login.current_user.contacts + f', {net}-{cont}'
         flask_login.current_user.contacts = contacts
         db_ses.commit()
+    return redirect('/profile')
+
+
+@app.route('/update_data', methods=["POST"])
+@login_required
+def update_data():
+    print("vhbjnkml,;")
+    name = request.form["name"]
+    email = request.form["email"]
+    flask_login.current_user.name = name
+    flask_login.current_user.email = email
+    db_ses.commit()
     return redirect('/profile')
 
 
