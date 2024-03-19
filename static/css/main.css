@@ -107,3 +107,8 @@ div {
 .btn-show {
     margin: 3px;
 }
+
+.contact-line {
+    color: red;
+    background-color: 9b9b9b;
+}

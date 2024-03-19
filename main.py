@@ -87,6 +87,7 @@ def enter_get():
 @app.route("/profile", methods=["POST", "GET"])
 @login_required
 def profile():
+    print(1, request.method)
     # Проверяем пост запрос либо гет
     if request.method == 'POST':
         # Проверяем чей аккаунт (родителя, чайлда, хэдхантера)
@@ -130,6 +131,16 @@ def profile():
             db.session.commit()
             return "Успешно"
 
+        if flask_login.current_user.role == "option3":
+            print(123)
+
+            us_contacts = flask_login.current_user.contacts
+            if us_contacts is not None:
+                super_cont = us_contacts.split(', ')
+            else:
+                super_cont = []
+            return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont)
+
 
     else:
         if flask_login.current_user.role == "option1":
@@ -137,16 +148,51 @@ def profile():
         elif flask_login.current_user.role == "option2":
             return render_template("profile_parent.html", current_user=flask_login.current_user)
         elif flask_login.current_user.role == "option3":
+            print(1)
             us_contacts = flask_login.current_user.contacts
-            print(us_contacts)
             if us_contacts is not None:
                 super_cont = us_contacts.split(', ')
             else:
                 super_cont = []
-            print(super_cont, us_contacts)
-            return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont)
+            return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont[1:])
         else:
             return "Технические шоколадки"
+
+
+@app.route("/del_contact", methods=["GET", "POST"])
+@login_required
+def delete_contact():
+    print(165, request.method)
+    if request.method == "POST":
+        delete = request.form["delete"]
+        print(delete)
+        us_contacts = flask_login.current_user.contacts
+        if us_contacts is not None:
+            super_cont = us_contacts.split(', ')
+        else:
+            super_cont = []
+        print(super_cont)
+        flask_login.current_user.contacts = flask_login.current_user.contacts.replace(f', {delete}', '')
+        db.session.commit()
+        # return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont)
+        return redirect('/profile')
+
+
+@app.route('/add_cont', methods=["POST"])
+@login_required
+def add_contact():
+    print(666)
+    net = request.form['net']
+    cont = request.form['way']
+    print(net, cont)
+    if net != '' and cont != '':
+        if flask_login.current_user.contacts is None:
+            contacts = f', {net}-{cont}'
+        else:
+            contacts = flask_login.current_user.contacts + f', {net}-{cont}'
+        flask_login.current_user.contacts = contacts
+        db.session.commit()
+    return redirect('/profile')
 
 
 @app.route("/resume", methods=["GET"])
