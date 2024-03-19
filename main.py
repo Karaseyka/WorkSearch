@@ -160,7 +160,7 @@ def delete_contact():
             super_cont = []
         print(super_cont)
         flask_login.current_user.contacts = flask_login.current_user.contacts.replace(f', {delete}', '')
-        db.session.commit()
+        db_ses.commit()
         # return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont)
         return redirect('/profile')
 
@@ -178,7 +178,7 @@ def add_contact():
         else:
             contacts = flask_login.current_user.contacts + f', {net}-{cont}'
         flask_login.current_user.contacts = contacts
-        db.session.commit()
+        db_ses.commit()
     return redirect('/profile')
 
 
