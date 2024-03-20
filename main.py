@@ -259,7 +259,7 @@ def add_vacancies():
         db_sess = db_session.create_session()
         db_sess.add(vacanciy)
         db_sess.commit()
-        if flask_login:
+        if flask_login.current_user.works:
             flask_login.current_user.works += f', {vacanciy.id}'
         else:
             flask_login.current_user.works = f', {vacanciy.id}'
