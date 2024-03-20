@@ -6,21 +6,20 @@
         <div class="col-1"></div>
 
         <div class="col-10 pro-child-spare">
-            <div class="mb-1 row pro-child-text">Все ваши вакансии</div>
+            <div class="mb-1 row pro-child-text">Все вакансии</div>
 
             {% for i in range(0, count, 3) %}
                 <div style="display: flex; justify-content: space-between;">
                     {% for e in vacancies[i:i+3] %}
-                        <form style="border: 1px solid DarkGray; height: 290px;
+                        <form method="post" style="border: 1px solid DarkGray; height: 290px;
                         width: 320px; background-color: Honeydew; border-radius: 5px;
                         padding: 5px; margin: 10px; display: flex; flex-direction: column;
                         justify-content: start; font-size: 20px;">
                             <h4>{{ e[0] }}</h4>
                             <p>От {{e[1]}} лет</p>
-                            <p>Место работы:</p>
-                            <p style="font-weight: bold;">Зарплата: {{e[3]}} рублей в
-                                неделю</p>
-                            <button class="btn btn-outline-primary btn-show pro-btn">
+                            <p class="w-100">Место работы:</p>
+                            <p style="font-weight: bold;" >Зарплата: {{e[3]}} рублей</p>
+                            <button id={{e[5]}} name="{{e[5]}}" class="btn btn-outline-primary btn-show pro-btn" type="submit">
                                 Перейти
                             </button>
                         </form>

@@ -1,14 +1,13 @@
 from io import BytesIO
 from data.api import user_api
 import flask_login
-from flask import Flask, render_template, redirect, send_file
+from flask import Flask, render_template, redirect, send_file, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required
 from flask import request
 from data.database import db_session
 from data.models.user import User
 from data.models.vacancy import Vacancy
-
 
 app = Flask(__name__)
 app.secret_key = 'some key'
@@ -218,16 +217,28 @@ def new_vacancy():
     return render_template('add_vacancy.html')
 
 
-@app.route("/vacancies", methods=["GET"])
+@app.route("/vacancies", methods=["GET", "POST"])
 @login_required
 def vacancies():
-    data_works = []
-    works = list(map(int, flask_login.current_user.works.split(", ")[1:]))
-    for e in works:
-        work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
-        one_work = (work.name, work.minimal_age, work.description, work.salary, len(work.description))
-        data_works.append(one_work)
-    return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
+    if request.method == 'POST':
+        vacancy_id = int(list(request.form)[0])
+        return redirect(url_for('vacancy', vacancy_id=vacancy_id))
+    else:
+        data_works = []
+        works = db_ses.query(Vacancy).all()
+        for e in works:
+            work = e
+            one_work = (work.name, work.minimal_age, work.description, work.salary, len(work.description), work.id)
+            data_works.append(one_work)
+        return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
+
+
+@app.route("/vacancy", methods=["GET", "POST"])
+@login_required
+def vacancy():
+    date = request.args.get('vacancy_id', None)
+    vac = db_ses.query(Vacancy).filter_by(id=date).first()
+    return render_template("vacancy.html", vac=vac)
 
 
 @app.route("/add_vacancies", methods=["POST", "GET"])
@@ -254,7 +265,6 @@ def add_vacancies():
         text = request.form["Text1"]
         salary = request.form["salary"]
         print(name, age, text, salary)
-
 
         vacanciy = Vacancy()
         vacanciy.name = name
