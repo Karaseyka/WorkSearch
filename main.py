@@ -122,8 +122,8 @@ def profile():
             return "Успешно"
 
         if flask_login.current_user.role == "option3":
-            name = request.form["name"]
-            email = request.form["email"]
+            # name = request.form["name"]
+            # email = request.form["email"]
             us_contacts = flask_login.current_user.contacts
             if us_contacts is not None:
                 super_cont = us_contacts.split(', ')
@@ -221,7 +221,13 @@ def new_vacancy():
 @app.route("/vacancies", methods=["GET"])
 @login_required
 def vacancies():
-    return render_template("vacancies.html")
+    data_works = []
+    works = list(map(int, flask_login.current_user.works.split(", ")[1:]))
+    for e in works:
+        work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
+        one_work = (work.name, work.minimal_age, work.description, work.salary, len(work.description))
+        data_works.append(one_work)
+    return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
 
 
 @app.route("/add_vacancies", methods=["POST", "GET"])
@@ -256,9 +262,9 @@ def add_vacancies():
         vacanciy.minimal_age = age
         vacanciy.description = text
         vacanciy.salary = salary
-        db_sess = db_session.create_session()
-        db_sess.add(vacanciy)
-        db_sess.commit()
+        # db_sess = db_session.create_session()
+        db_ses.add(vacanciy)
+        db_ses.commit()
         if flask_login:
             flask_login.current_user.works += f', {vacanciy.id}'
         else:

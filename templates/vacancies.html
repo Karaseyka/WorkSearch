@@ -8,22 +8,26 @@
         <div class="col-10 pro-child-spare">
             <div class="mb-1 row pro-child-text">Все ваши вакансии</div>
 
-
-            {% for e in vacancies %}
-<!--            V razrabotke  =)  -->
-                <div class="card" style="width: 18rem; backround-color: f6f6f6;">
-                    <div class="card-body">
-                        <h5 class="card-title">Заголовок карточки</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Подзаголовок
-                            карточки</h6>
-                        <p class="card-text">Небольшой пример текста, который
-                            должен основываться на названии карты и составлять
-                            основную часть содержимого карты.</p>
-                        <a href="#" class="card-link">Ссылка карточки</a>
-                        <a href="#" class="card-link">Другая ссылка</a>
-                    </div>
+            {% for i in range(0, count, 3) %}
+                <div style="display: flex; justify-content: space-between;">
+                    {% for e in vacancies[i:i+3] %}
+                        <form style="border: 1px solid DarkGray; height: 290px;
+                        width: 320px; background-color: Honeydew; border-radius: 5px;
+                        padding: 5px; margin: 10px; display: flex; flex-direction: column;
+                        justify-content: start; font-size: 20px;">
+                            <h4>{{ e[0] }}</h4>
+                            <p>От {{e[1]}} лет</p>
+                            <p>Место работы:</p>
+                            <p style="font-weight: bold;">Зарплата: {{e[3]}} рублей в
+                                неделю</p>
+                            <button class="btn btn-outline-primary btn-show pro-btn">
+                                Перейти
+                            </button>
+                        </form>
+                    {% endfor %}
                 </div>
             {% endfor %}
+
         </div>
         <div class="col-1"></div>
     </div>
