@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="mb-5 row"></div>
+    <div class="row">
+        <div class="col-1"></div>
+
+        <div class="col-10 pro-child-spare">
+            <div class="mb-1 row pro-child-text">{{vac.name}}</div>
+
+
+            <p>От {{vac.minimal_age}} лет</p>
+            <p class="w-100">Место работы:</p>
+            <p class="w-100">Описание:</p>
+            <p class="w-100">{{vac.description}}</p>
+            <p style="font-weight: bold;">Зарплата: {{vac.salary}} рублей</p>
+
+
+
+        </div>
+        <div class="col-1"></div>
+    </div>
+</div>
+{% block main %}
+
+{% endblock %}
+{% endblock %}
