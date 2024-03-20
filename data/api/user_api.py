@@ -26,6 +26,7 @@ def get_user():
         }
     )
 
+
 @blueprint.route('/api/vacancies')
 def get_vacancies():
     db_sess = db
@@ -37,5 +38,3 @@ def get_vacancies():
                  for item in vacancies]
         }
     )
-
-
