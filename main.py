@@ -157,8 +157,10 @@ def profile():
                 super_cont = []
 
             data_works = []
-            works = list(
-                map(int, flask_login.current_user.works.split(", ")[1:]))
+            works = []
+            if flask_login.current_user.works:
+                works = list(
+                    map(int, flask_login.current_user.works.split(", ")[1:]))
             for e in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
                 one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
