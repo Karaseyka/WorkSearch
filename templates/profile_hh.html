@@ -15,7 +15,7 @@
                                 <label for="staticName"
                                        class="col-sm-2 col-form-label">Имя</label>
                                 <div class="col-sm-10">
-                                    <input type="text"
+                                    <input type="text" required
                                            class="form-control-plaintext"
                                            name="name" id="staticName"
                                            value={{current_user.name}}>
@@ -25,9 +25,9 @@
                                 <label for="staticEmail"
                                        class="col-sm-2 col-form-label">Email</label>
                                 <div class="col-sm-10">
-                                    <input type="text"
+                                    <input type="email"
                                            class="form-control-plaintext"
-                                           name="email"
+                                           name="email" required
                                            id="staticEmail"
                                            value={{current_user.email}}>
                                 </div>
@@ -170,6 +170,31 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="mb-3 row"></div>
+            <div class="mb-3 row pro-child-text">Ваши вакансии</div>
+            <div class="pro-child-flex container">
+                {% for i in range(0, count, 3) %}
+                    <div style="display: flex; justify-content: space-between;">
+                        {% for e in vacancies[i:i+3] %}
+                            <form method="post" style="border: 1px solid DarkGray; height: 290px;
+                            width: 320px; background-color: Honeydew; border-radius: 5px;
+                            padding: 5px; margin: 10px; display: flex; flex-direction: column;
+                            justify-content: space-between; font-size: 20px;">
+                                <div>
+                                    <h4>{{ e[0] }}</h4>
+                                    <p>От {{e[1]}} лет</p>
+                                    <p class="w-100">Место работы: {{e[2]}}</p>
+                                    <p style="font-weight: bold;" >Зарплата: {{e[3]}} рублей в неделю</p>
+                                </div>
+
+                                <button id={{e[5]}} name="{{e[5]}}" class="btn btn-outline-primary btn-show pro-btn" type="submit">
+                                    Перейти
+                                </button>
+                            </form>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
             </div>
         </div>
         <div class="col-1"></div>

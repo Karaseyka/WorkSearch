@@ -31,13 +31,15 @@
                     </li>
                 </ul>
                 <span class="navbar-text">
-
+                    {% if current_user.is_authenticated %}
+                        <h3>{{ current_user.name }}</h3>
+                    {% else %}
                         <div>
                             <button onclick="window.location.href = '/enter'"  class="btn btn-outline-primary">Вход</button>
                             <button onclick="window.location.href = '/registration'" class="btn btn-primary">Регистрация</button>
                         </div>
-
-                    </span>
+                    {% endif %}
+                </span>
             </div>
         </div>
     </nav>

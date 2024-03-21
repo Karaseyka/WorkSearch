@@ -128,8 +128,20 @@ def profile():
                 super_cont = us_contacts.split(', ')
             else:
                 super_cont = []
-            return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont)
-
+            data_works = []
+            works = list(
+                map(int, flask_login.current_user.works.split(", ")[1:]))
+            for e in works:
+                work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
+                one_work = (
+                work.name, work.minimal_age, work.town, work.salary,
+                len(work.description), work.id)
+                data_works.append(one_work)
+            return render_template("profile_hh.html",
+                                   current_user=flask_login.current_user,
+                                   contacts=super_cont[1:],
+                                   vacancies=data_works,
+                                   count=len(data_works))
 
     else:
         if flask_login.current_user.role == "option1":
@@ -143,7 +155,16 @@ def profile():
                 super_cont = us_contacts.split(', ')
             else:
                 super_cont = []
-            return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont[1:])
+
+            data_works = []
+            works = list(
+                map(int, flask_login.current_user.works.split(", ")[1:]))
+            for e in works:
+                work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
+                one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
+                data_works.append(one_work)
+            return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont[1:], vacancies=data_works,
+                                   count=len(data_works))
         else:
             return "Технические шоколадки"
 
@@ -228,7 +249,7 @@ def vacancies():
         works = db_ses.query(Vacancy).all()
         for e in works:
             work = e
-            one_work = (work.name, work.minimal_age, work.description, work.salary, len(work.description), work.id)
+            one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
             data_works.append(one_work)
         return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
 
@@ -246,25 +267,28 @@ def vacancy():
 def add_vacancies():
     print(1818)
     if request.method == 'GET':
-        name = request.form["name1"]
-        age = request.form["age"]
-        text = request.form["Text1"]
-        salary = request.form["salary"]
-
-        vacanciy = Vacancy()
-        vacanciy.name = name
-        vacanciy.owner = flask_login.current_user.id
-        vacanciy.minimal_age = age
-        vacanciy.description = text
-        vacanciy.salary = salary
-        db_ses.commit()
-        return redirect('/vacancies')
+        # name = request.form["name1"]
+        # age = request.form["age"]
+        # text = request.form["Text1"]
+        # salary = request.form["salary"]
+        #
+        # vacanciy = Vacancy()
+        # vacanciy.name = name
+        # vacanciy.owner = flask_login.current_user.id
+        # vacanciy.minimal_age = age
+        # vacanciy.description = text
+        # vacanciy.salary = salary
+        # db_ses.commit()
+        # return redirect('/vacancies')
+        pass
     else:
         name = request.form["name1"]
         age = request.form["age"]
         text = request.form["Text1"]
         salary = request.form["salary"]
-        print(name, age, text, salary)
+        address = request.form["address"]
+        town = request.form["town"]
+        print(name, age, text, salary, address, town)
 
         vacanciy = Vacancy()
         vacanciy.name = name
@@ -272,6 +296,8 @@ def add_vacancies():
         vacanciy.minimal_age = age
         vacanciy.description = text
         vacanciy.salary = salary
+        vacanciy.address = address
+        vacanciy.town = town
         # db_sess = db_session.create_session()
         db_ses.add(vacanciy)
         db_ses.commit()

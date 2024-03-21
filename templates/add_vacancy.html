@@ -14,25 +14,39 @@
                 <div class="form-group mb-5">
                     <label>Название профессии</label>
                     <input type="text" class="form-control"
-                           name="name1" value=""
+                           name="name1" value="" required maxlength="50"
                            placeholder="Введите название профессии">
                 </div>
                 <div class="form-group mb-5">
                     <label>Минимальный требуемый возраст</label>
-                    <input type="number" class="form-control"
+                    <input type="number" class="form-control" required
                            name="age" value="14" min="14">
                 </div>
 
                 <div class="form-group mb-5">
+                    <label>Город</label>
+                    <input type="text" class="form-control"
+                           name="town" value="" required
+                           placeholder="Введите название города трудоустройства">
+                </div>
+
+                <div class="form-group mb-5">
+                    <label>Адрес</label>
+                    <input type="text" class="form-control"
+                           name="address" value="" required
+                           placeholder="Введите адрес рабочего места">
+                </div>
+
+                <div class="form-group mb-5">
                     <label>Описание работы и обязанности рабочего</label>
-                    <textarea style="background-color: " name="Text1" cols="80"
+                    <textarea style="background-color: " name="Text1" cols="80" required
                               rows="5" class="form-control" maxlength="1000"
                               placeholder="Напишите, что должен будет делать работник (до 1000 символов)"></textarea>
                 </div>
 
                 <div class="form-group mb-5">
                     <label>Зарплата в неделю (сумма в рублях)</label>
-                    <input type="number" class="form-control"
+                    <input type="number" class="form-control" required
                            name="salary" value="0" min="0">
                 </div>
 
