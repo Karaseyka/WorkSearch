@@ -175,7 +175,7 @@
                 {% for i in range(0, count, 3) %}
                 <div style="display: flex; justify-content: space-between;">
                     {% for e in vacancies[i:i+3] %}
-                    <form method="post" style="border: 1px solid DarkGray; height: 290px;
+                    <form action="/go_to_vacancy" style="border: 1px solid DarkGray; height: 290px;
                             width: 320px; background-color: Honeydew; border-radius: 5px;
                             padding: 5px; margin: 10px; display: flex; flex-direction: column;
                             justify-content: space-between; font-size: 20px;">
@@ -185,11 +185,13 @@
                             <p class="w-100">Место работы: {{e[2]}}</p>
                             <p style="font-weight: bold;">Зарплата: {{e[3]}} рублей в неделю</p>
                         </div>
-
-                        <button id={{e[5]}} name="{{e[5]}}" class="btn btn-outline-primary btn-show pro-btn"
-                                type="submit">
-                            Перейти
-                        </button>
+                        <div>
+                            <button formmethod="post" id={{e[5]}} name="go-{{e[5]}}" class="btn btn-outline-primary btn-show pro-btn"
+                                    type="submit">
+                                Перейти
+                            </button>
+                            <button formmethod="post" id={{e[5]}} name="del-{{e[5]}}" type="submit" class="btn btn-outline-danger">Удалить</button>
+                        </div>
                     </form>
                     {% endfor %}
                 </div>

@@ -21,3 +21,5 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     works = sqlalchemy.Column(sqlalchemy.String)
     parent = sqlalchemy.Column(sqlalchemy.Integer)
     parentreq = sqlalchemy.Column(sqlalchemy.Integer)
+    parent = sqlalchemy.Column(sqlalchemy.Integer)
+    parentreq = sqlalchemy.Column(sqlalchemy.Integer)

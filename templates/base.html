@@ -33,6 +33,9 @@
                 <span class="navbar-text">
                     {% if current_user.is_authenticated %}
                         <h3>{{ current_user.name }}</h3>
+                        <form action="/logout/" style="margin-left: 5px;">
+                            <button class="btn btn-outline-primary">Выйти</button>
+                        </form>
                     {% else %}
                         <div>
                             <button onclick="window.location.href = '/enter'"  class="btn btn-outline-primary">Вход</button>

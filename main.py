@@ -259,8 +259,22 @@ def new_vacancy():
 @login_required
 def vacancies():
     if request.method == 'POST':
-        vacancy_id = int(list(request.form)[0])
-        return redirect(url_for('vacancy', vacancy_id=vacancy_id))
+        data_works = []
+        works = []
+        fil = request.form['find']
+        works = db_ses.query(Vacancy).all()
+        for e in works:
+            work = e
+            one_work = (work.name, work.minimal_age, work.town, work.salary,
+                        len(work.description), work.id)
+            if fil.lower() in work.name.lower() or fil.lower() in work.town.lower():
+                data_works.append(one_work)
+
+        if fil:
+            return render_template('vacancies.html',
+                                   filter=fil, vacancies=data_works, count=len(data_works))
+        return render_template('vacancies.html',
+                               filter='', vacancies=data_works, count=len(data_works))
     else:
         data_works = []
         works = []
@@ -279,6 +293,21 @@ def vacancies():
                 one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
                 data_works.append(one_work)
         return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
+
+
+@app.route('/go_to_vacancy', methods=['post'])
+@login_required
+def go_vacancy():
+    action, vacancy_id = list(request.form)[0].split('-')
+    vacancy_id = int(vacancy_id)
+    print(vacancy_id)
+    if action == 'go':
+        return redirect(url_for('vacancy', vacancy_id=vacancy_id))
+    elif action == 'del':
+        db_ses.query(Vacancy).filter(Vacancy.id == vacancy_id).delete()
+        flask_login.current_user.works = flask_login.current_user.works.replace(f', {vacancy_id}', '')
+        db_ses.commit()
+        return redirect('/profile')
 
 
 @app.route("/vacancy", methods=["GET", "POST"])
