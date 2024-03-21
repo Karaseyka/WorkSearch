@@ -1,9 +1,9 @@
 from io import BytesIO
 from data.api import user_api
 import flask_login
-from flask import Flask, render_template, redirect, send_file, url_for
+from flask import Flask, render_template, redirect, send_file, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, login_user, login_required
+from flask_login import LoginManager, login_user, login_required, logout_user
 from flask import request
 from data.database import db_session
 from data.models.user import User
@@ -23,6 +23,14 @@ db_ses = db_session.create_session()
 @manager.user_loader
 def load_user(user_id):
     return db_ses.query(User).get(user_id)
+
+
+@app.route('/logout/')
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out.")
+    return redirect(url_for('welcome_page'))
 
 
 @app.route("/")
@@ -80,6 +88,7 @@ def profile():
     # Проверяем пост запрос либо гет
     if request.method == 'POST':
         # Проверяем чей аккаунт (родителя, чайлда, хэдхантера)
+        # child
         if flask_login.current_user.role == "option1":
             # Действия с изменением данных аккаунта
             file = request.files["file"]
@@ -110,6 +119,7 @@ def profile():
                 flask_login.current_user.resumetxt = txt
                 db_ses.commit()
                 return "Успешно"
+        # parent
         if flask_login.current_user.role == "option2":
             name = request.form["staticName"]
             email = request.form["staticEmail"]
@@ -119,7 +129,7 @@ def profile():
             flask_login.current_user.child = child
             db_ses.commit()
             return "Успешно"
-
+        # hh
         if flask_login.current_user.role == "option3":
             # name = request.form["name"]
             # email = request.form["email"]
@@ -134,8 +144,8 @@ def profile():
             for e in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
                 one_work = (
-                work.name, work.minimal_age, work.town, work.salary,
-                len(work.description), work.id)
+                    work.name, work.minimal_age, work.town, work.salary,
+                    len(work.description), work.id)
                 data_works.append(one_work)
             return render_template("profile_hh.html",
                                    current_user=flask_login.current_user,
@@ -145,9 +155,11 @@ def profile():
 
     else:
         if flask_login.current_user.role == "option1":
-            return render_template("profile_child.html", current_user=flask_login.current_user)
+            return render_template("profile_child.html", current_user=flask_login.current_user,
+                                   db_ses=db_ses, User=User)
         elif flask_login.current_user.role == "option2":
-            return render_template("profile_parent.html", current_user=flask_login.current_user)
+            return render_template("profile_parent.html", current_user=flask_login.current_user,
+                                   db_ses=db_ses, User=User)
         elif flask_login.current_user.role == "option3":
             print(1)
             us_contacts = flask_login.current_user.contacts
@@ -165,8 +177,11 @@ def profile():
                 work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
                 one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
                 data_works.append(one_work)
-            return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont[1:], vacancies=data_works,
-                                   count=len(data_works))
+            return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont[1:],
+                                   vacancies=data_works,
+                                   count=len(data_works),
+                                   db_ses=db_ses,
+                                   User=User)
         else:
             return "Технические шоколадки"
 
@@ -309,6 +324,32 @@ def add_vacancies():
             flask_login.current_user.works = f', {vacanciy.id}'
         db_ses.commit()
         return redirect('/vacancies')
+
+
+@app.route("/request_to_child", methods=["POST"])
+@login_required
+def request_to_child():
+    login = request.form["child"]
+    print(login)
+    user = db_ses.query(User).filter_by(email=login).first()
+    user.parentreq = flask_login.current_user.id
+    db_ses.commit()
+    return redirect('/profile')
+
+
+@app.route("/accept_parent", methods=["POST"])
+@login_required
+def accept_parent():
+    login = request.form
+    print(list(login)[0])
+    if list(login)[0] == "delete":
+        flask_login.current_user.parentreq = None
+    elif list(login)[0] == "accept":
+        db_ses.query(User).filter_by(id=flask_login.current_user.parentreq).first().child = flask_login.current_user.id
+        flask_login.current_user.parent = flask_login.current_user.parentreq
+        flask_login.current_user.parentreq = None
+        db_ses.commit()
+    return redirect('/profile')
 
 
 @app.errorhandler(401)

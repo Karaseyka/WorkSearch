@@ -6,11 +6,11 @@
         <div class="col-1"></div>
 
         <div class="col-10 pro-child-spare">
-            <form method="post" enctype="multipart/form-data">
-                <div class="mb-3 row pro-child-text">Ваш профиль</div>
-                <div class="pro-child-flex container">
-                    <div class="row">
-                        <div class="pro-child-mainform col-7">
+            <div class="mb-3 row pro-child-text">Ваш профиль</div>
+            <div class="pro-child-flex container">
+                <div class="row">
+                    <div class="pro-child-mainform col-7">
+                        <form method="post" enctype="multipart/form-data">
                             <div class="mb-3 row pro-child-line">
                                 <label for="staticName" class="col-sm-2 col-form-label">Имя</label>
                                 <div class="col-sm-10">
@@ -32,31 +32,47 @@
                                            value="Родитель">
                                 </div>
                             </div>
+                        </form>
+                        <form id="add" name="add" method="post" action="/request_to_child" enctype="multipart/form-data">
                             <div class="mb-3 row pro-child-line">
                                 <label for="staticRole" class="col-sm-2 col-form-label">Ребёнок</label>
-                                <label for="staticRole" class="col-form-label fs-6">Чтобы добавить ребёнка впишите его почту</label>
+                                <label for="staticRole" class="col-form-label fs-6">Чтобы добавить ребёнка впишите
+                                    его почту</label>
                                 <div class="col-sm-10">
-                                    <input type="text"  class="form-control-plaintext" id="child" name="child"
-                                           value="{{current_user.child}}" >
+                                    {% if current_user.child %}
+                                    <input placeholder="Введите почту ребёнка" type="text"
+                                           class="form-control-plaintext" id="child" name="child"
+                                           value="{{db_ses.query(User).filter_by(id=current_user.child).first().email}}">
+                                    {% else %}
+                                    <input placeholder="Введите почту ребёнка" type="text"
+                                           class="form-control-plaintext" name="child">
+                                    {%endif%}
                                 </div>
                             </div>
+                            <button form="add" type="submit"
+                                    class="left btn btn-outline-success btn-show pro-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">
+                                Отправить запрос
+                            </button>
+                        </form>
 
-                        </div>
-                        <div class="pro-child-mainform col-3" style="background-color: white;">
-                            <div class="pro-child-form">
-                                <div class="mb-4 row"></div>
-                                <div class="pro-child-btns">
-                                    <button type="submit" class="btn btn-primary btn-submit pro-btn">Сохранить</button>
-                                </div>
-                                <p class="pro-child-font">
-                                    Нажимая на кнопку "Сохранить", вы принимаете правила пользовательского соглашения и
-                                    политики конфиденциальности, а также даете согласие на обработку персональных данных
-                                </p>
+                    </div>
+
+                    <div class="pro-child-mainform col-3" style="background-color: white;">
+                        <div class="pro-child-form">
+                            <div class="mb-4 row"></div>
+                            <div class="pro-child-btns">
+                                <button type="submit" class="btn btn-primary btn-submit pro-btn">Сохранить</button>
                             </div>
+                            <p class="pro-child-font">
+                                Нажимая на кнопку "Сохранить", вы принимаете правила пользовательского соглашения и
+                                политики конфиденциальности, а также даете согласие на обработку персональных данных
+                            </p>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
         <div class="col-1"></div>
     </div>
