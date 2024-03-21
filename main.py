@@ -263,11 +263,21 @@ def vacancies():
         return redirect(url_for('vacancy', vacancy_id=vacancy_id))
     else:
         data_works = []
-        works = db_ses.query(Vacancy).all()
-        for e in works:
-            work = e
-            one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
-            data_works.append(one_work)
+        works = []
+        if flask_login.current_user.role == "option1" and flask_login.current_user.parent:
+            if flask_login.current_user.works:
+                works = list(
+                    map(int, flask_login.current_user.works.split(", ")[1:]))
+            for e in works:
+                work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
+                one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
+                data_works.append(one_work)
+        else:
+            works = db_ses.query(Vacancy).all()
+            for e in works:
+                work = e
+                one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
+                data_works.append(one_work)
         return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
 
 
@@ -275,8 +285,25 @@ def vacancies():
 @login_required
 def vacancy():
     date = request.args.get('vacancy_id', None)
-    vac = db_ses.query(Vacancy).filter_by(id=date).first()
-    return render_template("vacancy.html", vac=vac)
+    if request.method == "POST":
+        vac = db_ses.query(Vacancy).filter_by(id=date).first()
+        print(vac)
+        if flask_login.current_user.works:
+            db_ses.query(User).filter_by(id=flask_login.current_user.child).first().works += f', {vac.id}'
+        else:
+            db_ses.query(User).filter_by(id=flask_login.current_user.child).first().works = f', {vac.id}'
+        db_ses.commit()
+        data_works = []
+        works = db_ses.query(Vacancy).all()
+        for e in works:
+            work = e
+            one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
+            data_works.append(one_work)
+        return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
+    else:
+        vac = db_ses.query(Vacancy).filter_by(id=date).first()
+        db_ses.commit()
+        return render_template("vacancy.html", vac=vac, current_user=flask_login.current_user)
 
 
 @app.route("/add_vacancies", methods=["POST", "GET"])
@@ -318,7 +345,7 @@ def add_vacancies():
         # db_sess = db_session.create_session()
         db_ses.add(vacanciy)
         db_ses.commit()
-        if flask_login:
+        if flask_login.current_user.works:
             flask_login.current_user.works += f', {vacanciy.id}'
         else:
             flask_login.current_user.works = f', {vacanciy.id}'

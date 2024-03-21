@@ -14,9 +14,11 @@
             <p class="w-100">Описание:</p>
             <p class="w-100">{{vac.description}}</p>
             <p style="font-weight: bold;">Зарплата: {{vac.salary}} рублей</p>
-
-
-
+            {% if current_user.role == "option2"%}
+            <form method="post">
+                <input type="submit" value="Добавить ребёнку" >
+            </form>
+            {% endif %}
         </div>
         <div class="col-1"></div>
     </div>
