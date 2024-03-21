@@ -1,5 +1,5 @@
 from io import BytesIO
-from data.api import user_api
+from data.api import api
 import flask_login
 from flask import Flask, render_template, redirect, send_file, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -49,10 +49,11 @@ def registration_post():
             db_ses.commit()
             return redirect("/")
         except:
-            return "Технические шоколадки"
+            db_ses.rollback()
+            return "Такой email уже существует"
 
     else:
-        return render_template("registration.html")
+        return "Пароли не совпадают"
 
 
 @app.route("/registration", methods=["GET"])
@@ -66,7 +67,7 @@ def enter_post():
     pw = request.form.get("password")
     if login and pw:
         user = db_ses.query(User).filter_by(email=login).first()
-        if check_password_hash(user.password, pw):
+        if user and check_password_hash(user.password, pw):
             login_user(user)
             return render_template("welcome_page.html")
         else:
@@ -414,5 +415,5 @@ def unauthorized_request(_):
 
 
 if __name__ == "__main__":
-    app.register_blueprint(user_api.blueprint)
+    app.register_blueprint(api.blueprint)
     app.run(debug=True)

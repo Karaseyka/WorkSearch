@@ -13,7 +13,7 @@ class Vacancy(SqlAlchemyBase, UserMixin, SerializerMixin):
     name = sqlalchemy.Column(sqlalchemy.String)
     description = sqlalchemy.Column(sqlalchemy.String)
     minimal_age = sqlalchemy.Column(sqlalchemy.String)
-    salary = sqlalchemy.Column(sqlalchemy.String)
+    salary = sqlalchemy.Column(sqlalchemy.Integer)
     town = sqlalchemy.Column(sqlalchemy.String)
     address = sqlalchemy.Column(sqlalchemy.String)
 
