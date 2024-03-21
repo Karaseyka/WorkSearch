@@ -6,19 +6,229 @@
         <div class="col-1"></div>
 
         <div class="col-10 pro-child-spare">
-            <div class="mb-1 row pro-child-text">{{vac.name}}</div>
+            <div class="mb-1 row pro-child-text">Вакансия: {{vac.name}}</div>
+            <div class="pro-child-flex container">
+                <div class="row">
+                    <div class="pro-child-mainform col-7">
+                        <form id="nameEmail" action="/update_data"
+                              method="post">
+                            <div class="mb-3 row pro-child-line">
+                                <label class="col-sm-2 col-form-label">Возраст</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly
+                                           class="form-control-plaintext"
+                                           name="name"
+                                           value="От {{vac.minimal_age}} лет">
+                                </div>
+                            </div>
+                            <div class="mb-3 row pro-child-line">
+                                <label class="col-sm-2 col-form-label">Место
+                                    работы</label>
+                                <div class="col-sm-10">
+                                    <input type="text"
+                                           class="form-control-plaintext"
+                                           name="email" readonly
+                                           id="staticEmail"
+                                           value="{{vac.town}}, {{vac.address}}">
+                                </div>
+                            </div>
+                        </form>
+                        <div class="mb-3 row pro-child-line">
+                            <label class="col-sm-2 col-form-label">Обязанности
+                                и условия</label>
+                            <div class="col-sm-10">
+                                <!--                                <input type="text" readonly-->
+                                <!--                                       class="form-control-plaintext"-->
+                                <!--                                       value="">-->
+                                <p>{{vac.description}}</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row pro-child-line">
+                            <label class="col-sm-2 col-form-label">Зарплата</label>
+                            <div class="col-sm-10">
+                                <input type="text" readonly
+                                       class="form-control-plaintext"
+                                       value="{{vac.salary}} рублей в неделю">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row pro-child-line">
+                            <label class="col-sm-2 col-form-label">Работодатель</label>
+                            <div class="col-sm-10">
+                                <input type="text" readonly
+                                       class="form-control-plaintext"
+                                       value="{{owner.name}}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row pro-child-line">
+                            <label class="col-sm-2 col-form-label">
+                                Контакты
+                            </label>
+                            {% if owner.contacts == '' %}
+                            <div class="col-sm-10">
+                                <input type="text" readonly
+                                       class="form-control-plaintext"
+                                       value="{{owner.name}} не указал контакты">
+
+                            </div>
+                            {% else %}
+                            <div class="col-sm-10">
+                                {% for e in contacts %}
+
+                                <input type="text" readonly
+                                       class="form-control-plaintext"
+                                       name="contact"
+                                       value="{{ e.split('-')[0] }}:    {{ e.split('-')[1] }}">
+
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div style="display: flex; justify-content: start;">
+                            <form action="/vacancies" method="get">
+                                <button class="btn btn-outline-primary btn-show pro-btn">
+                                    Назад
+                                </button>
+                            </form>
+                            {% if vac.owner == current_user.id %}
+                            <!-- Кнопка-триггер модального окна -->
+                            <button type="button"
+                                    class="left btn btn-outline-success btn-show pro-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">
+                                Редактировать
+                            </button>
+                            {% endif %}
+                        </div>
+                        <div class="modal fade" id="exampleModal"
+                             tabindex="-1"
+                             aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title"
+                                            id="exampleModalLabel">
+                                            Изменение формы</h5>
+                                        <button type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Закрыть"></button>
+                                    </div>
+                                    <form action="/redact_form" method="post"
+                                          enctype="multipart/form-data">
+
+                                        <div class="modal-body">
+                                            Измените те параметры вашей
+                                            вакансии, которые вас не устраивают
+
+                                            <div class="form-group mb-5">
+                                                <label>Название
+                                                    профессии</label>
+                                                <input type="text"
+                                                       class="form-control"
+                                                       name="name1" value="{{vac.name}}"
+                                                       required maxlength="50"
+                                                       placeholder="Введите название профессии">
+                                            </div>
+                                            <div class="form-group mb-5">
+                                                <label>Минимальный требуемый
+                                                    возраст</label>
+                                                <input type="number"
+                                                       class="form-control"
+                                                       required
+                                                       name="age" value="{{vac.minimal_age}}"
+                                                       min="14">
+                                            </div>
+
+                                            <div class="form-group mb-5">
+                                                <label>Город</label>
+                                                <input type="text"
+                                                       class="form-control"
+                                                       name="town" value="{{vac.town}}"
+                                                       required
+                                                       placeholder="Введите название города трудоустройства">
+                                            </div>
+
+                                            <div class="form-group mb-5">
+                                                <label>Адрес</label>
+                                                <input type="text"
+                                                       class="form-control"
+                                                       name="address" value="{{vac.address}}"
+                                                       required
+                                                       placeholder="Введите адрес рабочего места">
+                                            </div>
+
+                                            <div class="form-group mb-5">
+                                                <label>Описание работы и
+                                                    обязанности
+                                                    рабочего</label>
+                                                <textarea
+                                                        style="background-color: "
+                                                        name="Text1" cols="80"
+                                                        required
+                                                        rows="5"
+                                                        class="form-control"
+                                                        maxlength="1000"
+                                                        placeholder="Напишите, что должен будет делать работник (до 1000 символов)">{{vac.description}}</textarea>
+                                            </div>
+
+                                            <div class="form-group mb-5">
+                                                <label>Зарплата в неделю (сумма
+                                                    в рублях)</label>
+                                                <input type="number"
+                                                       class="form-control"
+                                                       required
+                                                       name="salary" value="{{vac.salary}}"
+                                                       min="0">
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button"
+                                                    class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">
+                                                Закрыть
+                                            </button>
+                                            <button type="submit" id="{{vac.id}}" name="id" value="{{vac.id}}"
+                                                    class="btn btn-primary">
+                                                Сохранить изменения
+                                            </button>
 
 
-            <p>От {{vac.minimal_age}} лет</p>
-            <p class="w-100">Место работы:</p>
-            <p class="w-100">Описание:</p>
-            <p class="w-100">{{vac.description}}</p>
-            <p style="font-weight: bold;">Зарплата: {{vac.salary}} рублей</p>
-            {% if current_user.role == "option2"%}
-            <form method="post">
-                <input type="submit" value="Добавить ребёнку" >
-            </form>
-            {% endif %}
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="pro-child-mainform col-3"
+                         style="background-color: white;">
+                        <div class="pro-child-form">
+                            <div class="mb-4 row"></div>
+                            <div class="pro-child-btns">
+                                <button type="submit"
+                                        class="btn btn-primary btn-submit pro-btn"
+                                        form="nameEmail">
+                                    Сохранить
+                                </button>
+                            </div>
+                            <p class="pro-child-font">
+                                Нажимая на кнопку "Сохранить", вы
+                                принимаете правила пользовательского
+                                соглашения и
+                                политики конфиденциальности, а также даете
+                                согласие на обработку персональных данных
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-1"></div>
     </div>

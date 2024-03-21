@@ -47,6 +47,7 @@ def registration_post():
         try:
             db_ses.add(user)
             db_ses.commit()
+            login_user(user)
             return redirect("/")
         except:
             db_ses.rollback()
@@ -176,6 +177,7 @@ def profile():
                     map(int, flask_login.current_user.works.split(", ")[1:]))
             for e in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
+                print(work)
                 one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
                 data_works.append(one_work)
             return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont[1:],
@@ -311,9 +313,35 @@ def go_vacancy():
         return redirect('/profile')
 
 
+@app.route('/redact_form', methods=['post'])
+@login_required
+def redact_form():
+    ids = request.form['id']
+    name = request.form["name1"]
+    age = request.form["age"]
+    text = request.form["Text1"]
+    salary = request.form["salary"]
+    address = request.form["address"]
+    town = request.form["town"]
+    vacanciy = db_ses.query(Vacancy).filter_by(id=ids).first()
+    vacanciy.name = name
+    vacanciy.owner = flask_login.current_user.id
+    vacanciy.minimal_age = age
+    vacanciy.description = text
+    vacanciy.salary = salary
+    vacanciy.address = address
+    vacanciy.town = town
+    # db_sess = db_session.create_session()
+    db_ses.add(vacanciy)
+    db_ses.commit()
+
+    return redirect(url_for('vacancy', vacancy_id=ids))
+
+
 @app.route("/vacancy", methods=["GET", "POST"])
 @login_required
 def vacancy():
+
     date = request.args.get('vacancy_id', None)
     if request.method == "POST":
         vac = db_ses.query(Vacancy).filter_by(id=date).first()
@@ -332,8 +360,10 @@ def vacancy():
         return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
     else:
         vac = db_ses.query(Vacancy).filter_by(id=date).first()
+        owner = db_ses.query(User).filter_by(id=vac.owner).first()
         db_ses.commit()
-        return render_template("vacancy.html", vac=vac, current_user=flask_login.current_user)
+        contacts = owner.contacts.split(', ')[1:]
+        return render_template("vacancy.html", contacts=contacts, vac=vac, current_user=flask_login.current_user, owner=owner)
 
 
 @app.route("/add_vacancies", methods=["POST", "GET"])
@@ -341,19 +371,6 @@ def vacancy():
 def add_vacancies():
     print(1818)
     if request.method == 'GET':
-        # name = request.form["name1"]
-        # age = request.form["age"]
-        # text = request.form["Text1"]
-        # salary = request.form["salary"]
-        #
-        # vacanciy = Vacancy()
-        # vacanciy.name = name
-        # vacanciy.owner = flask_login.current_user.id
-        # vacanciy.minimal_age = age
-        # vacanciy.description = text
-        # vacanciy.salary = salary
-        # db_ses.commit()
-        # return redirect('/vacancies')
         pass
     else:
         name = request.form["name1"]
