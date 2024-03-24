@@ -38,6 +38,11 @@ def welcome_page():
     return render_template("welcome_page.html")
 
 
+@app.route("/instruction")
+def instruction():
+    return render_template("instruction.html")
+
+
 @app.route("/registration", methods=["POST"])
 def registration_post():
     if request.form['password'] == request.form['passwordSec']:
