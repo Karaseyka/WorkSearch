@@ -45,11 +45,11 @@
                                     width="40"
                                     height="40"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal">
+                                    data-bs-target="#exampleModal1">
                         {% endif %}
 
 
-                        <div class="modal fade" id="exampleModal"
+                        <div class="modal fade" id="exampleModal1"
                              tabindex="-1"
                              aria-labelledby="exampleModalLabel"
                              aria-hidden="true">
@@ -66,13 +66,17 @@
                                     </div>
 <!--                                    Тут цикл ниже \/. это список все уведомлений.
                         надо также прописать условие: if alerts; на случай если их нет-->
-<!--                                    {% for e in alerts %}-->
-                                    <form action="/add_cont" method="post" enctype="multipart/form-data">
+                                    {% if current_user.otkliks %}
 
-                                        <div class="modal-body">
+                                    <form  action="/add_cont" method="post" enctype="multipart/form-data">
+                                        {% for e in current_user.otkliks.split(", ")[1::] %}
+                                        <div class="modal-body ">
 <!--                                            Тут все об уведомлении-->
 
+                                            <p>Отклик от <a href="#">{{db_ses.query(User).filter_by(id=e.split("-")[0]).first().email}}</a> на вакансию {{db_ses.query(Vacancy).filter(Vacancy.id==e.split("-")[1]).first().name}}</p>
+
                                         </div>
+                                        {% endfor %}
                                         <div class="modal-footer">
                                             <button type="button"
                                                     class="btn btn-secondary"
@@ -82,7 +86,8 @@
 
                                         </div>
                                     </form>
-<!--                                    {% endfor %}-->
+
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

@@ -35,12 +35,12 @@ def logout():
 
 @app.route("/")
 def welcome_page():
-    return render_template("welcome_page.html")
+    return render_template("welcome_page.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
 
 
 @app.route("/instruction")
 def instruction():
-    return render_template("instruction.html")
+    return render_template("instruction.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
 
 
 @app.route("/registration", methods=["POST"])
@@ -158,15 +158,16 @@ def profile():
                                    current_user=flask_login.current_user,
                                    contacts=super_cont[1:],
                                    vacancies=data_works,
-                                   count=len(data_works))
+                                   count=len(data_works),
+                                   db_ses=db_ses, Vacancy=Vacancy, User=User)
 
     else:
         if flask_login.current_user.role == "option1":
             return render_template("profile_child.html", current_user=flask_login.current_user,
-                                   db_ses=db_ses, User=User)
+                                   db_ses=db_ses, User=User, Vacancy=Vacancy)
         elif flask_login.current_user.role == "option2":
             return render_template("profile_parent.html", current_user=flask_login.current_user,
-                                   db_ses=db_ses, User=User)
+                                   db_ses=db_ses, User=User, Vacancy=Vacancy)
         elif flask_login.current_user.role == "option3":
             print(1)
             us_contacts = flask_login.current_user.contacts
@@ -188,8 +189,7 @@ def profile():
             return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont[1:],
                                    vacancies=data_works,
                                    count=len(data_works),
-                                   db_ses=db_ses,
-                                   User=User)
+                                   db_ses=db_ses, Vacancy=Vacancy, User=User)
         else:
             return "Технические шоколадки"
 
@@ -260,7 +260,7 @@ def resume():
 @login_required
 def new_vacancy():
     print(12929)
-    return render_template('add_vacancy.html')
+    return render_template('add_vacancy.html', db_ses=db_ses, Vacancy=Vacancy, User=User)
 
 
 @app.route("/vacancies", methods=["GET", "POST"])
@@ -280,9 +280,9 @@ def vacancies():
 
         if fil:
             return render_template('vacancies.html',
-                                   filter=fil, vacancies=data_works, count=len(data_works))
+                                   filter=fil, vacancies=data_works, count=len(data_works), db_ses=db_ses, Vacancy=Vacancy, User=User)
         return render_template('vacancies.html',
-                               filter='', vacancies=data_works, count=len(data_works))
+                               filter='', vacancies=data_works, count=len(data_works), db_ses=db_ses, Vacancy=Vacancy, User=User)
     else:
         data_works = []
         works = []
@@ -300,7 +300,7 @@ def vacancies():
                 work = e
                 one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
                 data_works.append(one_work)
-        return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
+        return render_template("vacancies.html", vacancies=data_works, count=len(data_works), db_ses=db_ses, Vacancy=Vacancy, User=User)
 
 
 @app.route('/go_to_vacancy', methods=['post'])
@@ -368,7 +368,7 @@ def vacancy():
         owner = db_ses.query(User).filter_by(id=vac.owner).first()
         db_ses.commit()
         contacts = owner.contacts.split(', ')[1:]
-        return render_template("vacancy.html", contacts=contacts, vac=vac, current_user=flask_login.current_user, owner=owner)
+        return render_template("vacancy.html", contacts=contacts, vac=vac, current_user=flask_login.current_user, owner=owner, db_ses=db_ses, Vacancy=Vacancy, User=User)
 
 
 @app.route("/add_vacancies", methods=["POST", "GET"])
