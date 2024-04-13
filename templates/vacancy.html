@@ -10,8 +10,9 @@
             <div class="pro-child-flex container">
                 <div class="row">
                     <div class="pro-child-mainform col-7">
-                        <form id="nameEmail" action="/update_data"
+                        <form id="otklik" action="/otklik"
                               method="post">
+                            <input name="id" value="{{ vac.id }}" hidden>
                             <div class="mb-3 row pro-child-line">
                                 <label class="col-sm-2 col-form-label">Возраст</label>
                                 <div class="col-sm-10">
@@ -214,16 +215,12 @@
                             <div class="pro-child-btns">
                                 <button type="submit"
                                         class="btn btn-primary btn-submit pro-btn"
-                                        form="nameEmail">
-                                    Сохранить
+                                        form="otklik">
+                                    Откликнуться
                                 </button>
                             </div>
                             <p class="pro-child-font">
-                                Нажимая на кнопку "Сохранить", вы
-                                принимаете правила пользовательского
-                                соглашения и
-                                политики конфиденциальности, а также даете
-                                согласие на обработку персональных данных
+                                Работодателю придет уведомление и он свяжется с вами по указанным вами контактами.
                             </p>
                         </div>
                     </div>

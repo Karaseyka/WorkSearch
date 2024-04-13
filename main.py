@@ -405,6 +405,23 @@ def add_vacancies():
         return redirect('/vacancies')
 
 
+@app.route('/otklik', methods=['POST'])
+@login_required
+def oklik():
+    ids = request.form['id']
+    vacanciy = db_ses.query(Vacancy).filter_by(id=ids).first()
+    owner = vacanciy.owner
+    user = db_ses.query(User).filter_by(id=owner).first()
+    print(user.otkliks)
+    if user.otkliks:
+
+        user.otkliks += ', ' + str(flask_login.current_user.id) + '-' + str(ids)
+    else:
+        user.otkliks = ', ' + str(flask_login.current_user.id) + '-' + str(ids)
+    db_ses.commit()
+    return redirect('/vacancies')
+
+
 @app.route("/request_to_child", methods=["POST"])
 @login_required
 def request_to_child():

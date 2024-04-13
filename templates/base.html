@@ -38,14 +38,15 @@
                 </ul>
                 <span class="navbar-text">
                     {% if current_user.is_authenticated %}
-
-                        <!-- Кнопка-триггер модального окна -->
-                        <img
-                                src="https://static.vecteezy.com/system/resources/previews/001/505/138/original/notification-bell-icon-free-vector.jpg"
-                                width="40"
-                                height="40"
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">
+                        {% if current_user.role == 'option3' %}
+                            <!-- Кнопка-триггер модального окна -->
+                            <img
+                                    src="https://static.vecteezy.com/system/resources/previews/001/505/138/original/notification-bell-icon-free-vector.jpg"
+                                    width="40"
+                                    height="40"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">
+                        {% endif %}
 
 
                         <div class="modal fade" id="exampleModal"
