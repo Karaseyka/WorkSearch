@@ -73,7 +73,7 @@
                                         <div class="modal-body ">
 <!--                                            Тут все об уведомлении-->
 
-                                            <p>Отклик от <a href="#">{{db_ses.query(User).filter_by(id=e.split("-")[0]).first().email}}</a> на вакансию {{db_ses.query(Vacancy).filter(Vacancy.id==e.split("-")[1]).first().name}}</p>
+                                            <p>Отклик от <a href="/profile_review/{{e.split("-")[0]}}">{{db_ses.query(User).filter_by(id=e.split("-")[0]).first().email}}</a> на вакансию {{db_ses.query(Vacancy).filter(Vacancy.id==e.split("-")[1]).first().name}}</p>
 
                                         </div>
                                         {% endfor %}

@@ -75,7 +75,7 @@ def enter_post():
         user = db_ses.query(User).filter_by(email=login).first()
         if user and check_password_hash(user.password, pw):
             login_user(user)
-            return render_template("welcome_page.html")
+            return render_template("welcome_page.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
         else:
             return render_template("enter.html")
 
@@ -111,7 +111,9 @@ def profile():
                         flask_login.current_user.resumetxt = None
                         flask_login.current_user.resume = file_bite
                         db_ses.commit()
-                        return "Успешно"
+                        return render_template("profile_child.html",
+                                               current_user=flask_login.current_user,
+                                               db_ses=db_ses, Vacancy=Vacancy, User=User)
                     except:
                         return "Неудалось добавить файл"
                 else:
@@ -120,12 +122,18 @@ def profile():
                 flask_login.current_user.name = name
                 flask_login.current_user.email = email
                 db_ses.commit()
-                return "Успешно"
+                return render_template("profile_child.html",
+                                       current_user=flask_login.current_user,
+                                       db_ses=db_ses, Vacancy=Vacancy, User=User)
             elif txt:
+                flask_login.current_user.name = name
+                flask_login.current_user.email = email
                 flask_login.current_user.resume = None
                 flask_login.current_user.resumetxt = txt
                 db_ses.commit()
-                return "Успешно"
+                return render_template("profile_child.html",
+                                       current_user=flask_login.current_user,
+                                       db_ses=db_ses, Vacancy=Vacancy, User=User)
         # parent
         if flask_login.current_user.role == "option2":
             name = request.form["staticName"]
@@ -256,6 +264,20 @@ def resume():
         return "Резюме не найдено"
 
 
+@app.route("/resume/<user>", methods=["GET"])
+@login_required
+def resume_user(user):
+    img = db_ses.query(User).filter_by(id=user).first().resume
+    txt = db_ses.query(User).filter_by(id=user).first().resumetxt
+    if img:
+        return send_file(BytesIO(img),
+                         download_name="resume.pdf", as_attachment=True)
+    elif txt:
+        return txt
+    else:
+        return "Резюме не найдено"
+
+
 @app.route("/create_vacancy", methods=["POST"])
 @login_required
 def new_vacancy():
@@ -280,9 +302,11 @@ def vacancies():
 
         if fil:
             return render_template('vacancies.html',
-                                   filter=fil, vacancies=data_works, count=len(data_works), db_ses=db_ses, Vacancy=Vacancy, User=User)
+                                   filter=fil, vacancies=data_works, count=len(data_works), db_ses=db_ses,
+                                   Vacancy=Vacancy, User=User)
         return render_template('vacancies.html',
-                               filter='', vacancies=data_works, count=len(data_works), db_ses=db_ses, Vacancy=Vacancy, User=User)
+                               filter='', vacancies=data_works, count=len(data_works), db_ses=db_ses, Vacancy=Vacancy,
+                               User=User)
     else:
         data_works = []
         works = []
@@ -300,7 +324,8 @@ def vacancies():
                 work = e
                 one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
                 data_works.append(one_work)
-        return render_template("vacancies.html", vacancies=data_works, count=len(data_works), db_ses=db_ses, Vacancy=Vacancy, User=User)
+        return render_template("vacancies.html", vacancies=data_works, count=len(data_works), db_ses=db_ses,
+                               Vacancy=Vacancy, User=User)
 
 
 @app.route('/go_to_vacancy', methods=['post'])
@@ -346,7 +371,6 @@ def redact_form():
 @app.route("/vacancy", methods=["GET", "POST"])
 @login_required
 def vacancy():
-
     date = request.args.get('vacancy_id', None)
     if request.method == "POST":
         vac = db_ses.query(Vacancy).filter_by(id=date).first()
@@ -368,7 +392,14 @@ def vacancy():
         owner = db_ses.query(User).filter_by(id=vac.owner).first()
         db_ses.commit()
         contacts = owner.contacts.split(', ')[1:]
-        return render_template("vacancy.html", contacts=contacts, vac=vac, current_user=flask_login.current_user, owner=owner, db_ses=db_ses, Vacancy=Vacancy, User=User)
+        return render_template("vacancy.html", contacts=contacts, vac=vac, current_user=flask_login.current_user,
+                               owner=owner, db_ses=db_ses, Vacancy=Vacancy, User=User)
+
+
+@app.route("/profile_review/<int:user>")
+def profile_review(user):
+    return render_template("profile_review.html", db_ses=db_ses, Vacancy=Vacancy, User=User,
+                           user=db_ses.query(User).filter_by(id=user).first())
 
 
 @app.route("/add_vacancies", methods=["POST", "GET"])

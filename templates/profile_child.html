@@ -11,7 +11,7 @@
             <div class="pro-child-flex container">
                 <div class="row">
                     <div class="pro-child-mainform col-7">
-                        <form method="post" enctype="multipart/form-data">
+                        <form id="usdt" method="post" enctype="multipart/form-data">
                             <div class="mb-3 row pro-child-line">
                                 <label for="staticName" class="col-sm-2 col-form-label">Имя</label>
                                 <div class="col-sm-10">
@@ -35,7 +35,11 @@
                             </div>
                             <div class="mb-3">
                                 <label for="filetxt" class="form-label">Расскажите о себе</label>
+                                {% if current_user.resumetxt %}
+                                <textarea class="form-control" name="filetxt" id="filetxt" rows="3">{{current_user.resumetxt}}</textarea>
+                                {% else %}
                                 <textarea class="form-control" name="filetxt" id="filetxt" rows="3"></textarea>
+                                {% endif %}
                             </div>
                             <div>
                                 <label for="file" class="form-label">Или прикрепите резюме</label>
@@ -84,7 +88,7 @@
                         <div class="pro-child-form">
                             <div class="mb-4 row"></div>
                             <div class="pro-child-btns">
-                                <button type="submit" class="btn btn-primary btn-submit pro-btn">Сохранить
+                                <button type="submit" class="btn btn-primary btn-submit pro-btn" form="usdt">Сохранить
                                 </button>
                             </div>
                             <p class="pro-child-font">
