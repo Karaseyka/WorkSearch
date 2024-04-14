@@ -372,6 +372,8 @@ def redact_form():
 @login_required
 def vacancy():
     date = request.args.get('vacancy_id', None)
+    if not flask_login.current_user.otkliks:
+        flask_login.current_user.otkliks = ''
     if request.method == "POST":
         vac = db_ses.query(Vacancy).filter_by(id=date).first()
         print(vac)
@@ -393,7 +395,7 @@ def vacancy():
         db_ses.commit()
         contacts = owner.contacts.split(', ')[1:]
         return render_template("vacancy.html", contacts=contacts, vac=vac, current_user=flask_login.current_user,
-                               owner=owner, db_ses=db_ses, Vacancy=Vacancy, User=User)
+                               owner=owner, db_ses=db_ses, Vacancy=Vacancy, User=User, ids=str(vac.id))
 
 
 @app.route("/profile_review/<int:user>")
@@ -449,6 +451,10 @@ def oklik():
         user.otkliks += ', ' + str(flask_login.current_user.id) + '-' + str(ids)
     else:
         user.otkliks = ', ' + str(flask_login.current_user.id) + '-' + str(ids)
+    print(-11010)
+    flask_login.current_user.otkliks += ', ' + str(ids)
+
+
     db_ses.commit()
     return redirect('/vacancies')
 

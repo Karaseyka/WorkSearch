@@ -46,51 +46,51 @@
                                     height="40"
                                     data-bs-toggle="modal"
                                     data-bs-target="#exampleModal1">
-                        {% endif %}
 
 
-                        <div class="modal fade" id="exampleModal1"
-                             tabindex="-1"
-                             aria-labelledby="exampleModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title"
-                                            id="exampleModalLabel">
-                                            Уведомления</h5>
-                                        <button type="button"
-                                                class="btn-close"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Закрыть"></button>
-                                    </div>
-<!--                                    Тут цикл ниже \/. это список все уведомлений.
-                        надо также прописать условие: if alerts; на случай если их нет-->
-                                    {% if current_user.otkliks %}
 
-                                    <form  action="/add_cont" method="post" enctype="multipart/form-data">
-                                        {% for e in current_user.otkliks.split(", ")[1::] %}
-                                        <div class="modal-body ">
-<!--                                            Тут все об уведомлении-->
-
-                                            <p>Отклик от <a href="/profile_review/{{e.split("-")[0]}}">{{db_ses.query(User).filter_by(id=e.split("-")[0]).first().email}}</a> на вакансию {{db_ses.query(Vacancy).filter(Vacancy.id==e.split("-")[1]).first().name}}</p>
-
-                                        </div>
-                                        {% endfor %}
-                                        <div class="modal-footer">
+                            <div class="modal fade" id="exampleModal1"
+                                 tabindex="-1"
+                                 aria-labelledby="exampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title"
+                                                id="exampleModalLabel">
+                                                Уведомления</h5>
                                             <button type="button"
-                                                    class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">
-                                                Закрыть
-                                            </button>
-
+                                                    class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Закрыть"></button>
                                         </div>
-                                    </form>
+    <!--                                    Тут цикл ниже \/. это список все уведомлений.
+                            надо также прописать условие: if alerts; на случай если их нет-->
+                                        {% if current_user.otkliks %}
 
-                                    {% endif %}
+                                        <form  action="/add_cont" method="post" enctype="multipart/form-data">
+                                            {% for e in current_user.otkliks.split(", ")[1::] %}
+                                            <div class="modal-body " style="border-bottom: 1px solid grey;">
+    <!--                                            Тут все об уведомлении-->
+
+                                                <p>Отклик от <a href="/profile_review/{{e.split("-")[0]}}">{{db_ses.query(User).filter_by(id=e.split("-")[0]).first().email}}</a> на вакансию {{db_ses.query(Vacancy).filter(Vacancy.id==e.split("-")[1]).first().name.lower()}}</p>
+                                            </div>
+                                            {% endfor %}
+                                            <div class="modal-footer">
+                                                <button type="button"
+                                                        class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+                                                    Закрыть
+                                                </button>
+
+                                            </div>
+                                        </form>
+
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endif %}
 
                         <h3>{{ current_user.name }}</h3>
                         <form action="/logout/" style="margin-left: 5px;">
