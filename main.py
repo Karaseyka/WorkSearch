@@ -75,6 +75,7 @@ def enter_post():
         user = db_ses.query(User).filter_by(email=login).first()
         if user and check_password_hash(user.password, pw):
             login_user(user)
+
             return render_template("welcome_page.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
         else:
             return render_template("enter.html")
@@ -171,8 +172,20 @@ def profile():
 
     else:
         if flask_login.current_user.role == "option1":
+            data_works = []
+            works = []
+            if flask_login.current_user.otkliks:
+                works = list(map(int, flask_login.current_user.otkliks.split(", ")[1:]))
+
+            for a in works:
+                work = db_ses.query(Vacancy).filter(Vacancy.id == a).first()
+                print(work)
+                one_work = (work.name, work.minimal_age, work.town, work.salary,len(work.description), work.id)
+                data_works.append(one_work)
+
             return render_template("profile_child.html", current_user=flask_login.current_user,
-                                   db_ses=db_ses, User=User, Vacancy=Vacancy)
+                                   db_ses=db_ses, User=User, Vacancy=Vacancy, vacancies=data_works,
+                                   count=len(data_works))
         elif flask_login.current_user.role == "option2":
             return render_template("profile_parent.html", current_user=flask_login.current_user,
                                    db_ses=db_ses, User=User, Vacancy=Vacancy)
@@ -339,6 +352,24 @@ def go_vacancy():
     elif action == 'del':
         db_ses.query(Vacancy).filter(Vacancy.id == vacancy_id).delete()
         flask_login.current_user.works = flask_login.current_user.works.replace(f', {vacancy_id}', '')
+        s = flask_login.current_user.otkliks.split(', ')
+        new_otkliks = []
+        print(s)
+        for e in s[1:]:
+            print(vacancy_id, int(e.split('-')[-1]))
+            if vacancy_id != int(e.split('-')[-1]):
+                new_otkliks.append(e)
+            else:
+                for user in db_ses.query(User).filter(User.role == 'option1').all():
+                    print(user.otkliks, 91910190)
+                    if user.otkliks:
+                        a = user.otkliks.split(', ')
+                        for vac in a[1:]:
+                            if int(vac.split('-')[-1]) == vacancy_id:
+                                user.otkliks = user.otkliks.replace(f', {vac}', '')
+
+        flask_login.current_user.otkliks = ', ' + ', '.join(new_otkliks)
+
         db_ses.commit()
         return redirect('/profile')
 

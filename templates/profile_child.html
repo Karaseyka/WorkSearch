@@ -101,6 +101,37 @@
                     </div>
                 </div>
             </div>
+            <div class="mb-3 row"></div>
+            <div class="mb-3 row pro-child-text">Ваши вакансии</div>
+            <div class="pro-child-flex container">
+                {% if vacancies %}
+                {% for i in range(0, count, 3) %}
+                <div style="display: flex; justify-content: space-between;">
+                    {% for e in vacancies[i:i+3] %}
+                    <form action="/go_to_vacancy" style="border: 1px solid DarkGray; height: 300px;
+                            width: 320px; background-color: Honeydew; border-radius: 5px;
+                            padding: 5px; margin: 10px; display: flex; flex-direction: column;
+                            justify-content: space-between; font-size: 20px;">
+                        <div>
+                            <h4>{{ e[0] }}</h4>
+                            <p>От {{e[1]}} лет</p>
+                            <p class="w-100">Место работы: {{e[2]}}</p>
+                            <p style="font-weight: bold;">Зарплата: {{e[3]}} рублей в неделю</p>
+                        </div>
+                        <div>
+                            <button formmethod="post" id={{e[5]}} name="go-{{e[5]}}" class="btn btn-outline-primary btn-show pro-btn"
+                                    type="submit">
+                                Перейти
+                            </button>
+                        </div>
+                    </form>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                {%else%}
+                <h3> У вас нет вакансий </h3>
+                {%endif%}
+            </div>
         </div>
         <div class="col-1"></div>
     </div>
