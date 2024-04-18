@@ -1,7 +1,7 @@
 import flask
 from flask import jsonify, make_response
 
-from main import User
+from server import User
 from ..database import db_session
 from ..models.vacancy import Vacancy
 
