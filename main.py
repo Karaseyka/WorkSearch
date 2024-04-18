@@ -53,7 +53,7 @@ def registration_post():
             db_ses.add(user)
             db_ses.commit()
             login_user(user)
-            return redirect("/")
+            return redirect("/profile")
         except:
             db_ses.rollback()
             return "Такой email уже существует"
@@ -76,7 +76,7 @@ def enter_post():
         if user and check_password_hash(user.password, pw):
             login_user(user)
 
-            return render_template("welcome_page.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
+            return render_template("instruction.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
         else:
             return render_template("enter.html")
 
