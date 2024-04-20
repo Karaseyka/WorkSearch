@@ -21,7 +21,7 @@ def get_user():
     return jsonify(
         {
             'users':
-                [item.to_dict(only=('id', 'name', 'email', 'role', 'resume', 'resumetxt', 'child', 'parent', 'child'))
+                [item.to_dict(only=('id', 'name', 'email', 'role', 'resumetxt', 'child', 'parent', 'child'))
                  for item in users]
         }
     )

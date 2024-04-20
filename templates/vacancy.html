@@ -209,11 +209,23 @@
 
                     </div>
                     {% if current_user.role != 'option3' %}
+
                         <div class="pro-child-mainform col-3"
                              style="background-color: white;">
                             <div class="pro-child-form">
                                 <div class="mb-4 row"></div>
-                                {% if ids in current_user.otkliks.split(', ') %}
+                                {% if current_user.role == 'option2' %}
+                                <div class="pro-child-btns" >
+                                    <form method="post" class="main-form">
+                                        <button type="submit"
+                                                class="btn btn-primary btn-submit pro-btn"
+                                                >
+                                            Добавить ребёнку
+                                        </button>
+                                    </form>
+                                </div>
+
+                                {% elif ids in current_user.otkliks.split(', ') %}
                                     <div class="pro-child-btns">
                                         <button type="submit"
                                                 class="btn btn-outline-secondary btn-submit pro-btn"

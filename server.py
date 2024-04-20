@@ -311,7 +311,8 @@ def vacancies():
             one_work = (work.name, work.minimal_age, work.town, work.salary,
                         len(work.description), work.id)
             if fil.lower() in work.name.lower() or fil.lower() in work.town.lower():
-                data_works.append(one_work)
+                if not flask_login.current_user.parent or str(work.id) in flask_login.current_user.worksfromparent.split(", "):
+                    data_works.append(one_work)
 
         if fil:
             return render_template('vacancies.html',
@@ -324,9 +325,9 @@ def vacancies():
         data_works = []
         works = []
         if flask_login.current_user.role == "option1" and flask_login.current_user.parent:
-            if flask_login.current_user.works:
+            if flask_login.current_user.worksfromparent:
                 works = list(
-                    map(int, flask_login.current_user.works.split(", ")[1:]))
+                    map(int, flask_login.current_user.worksfromparent.split(", ")[1:]))
             for e in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
                 one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
@@ -407,19 +408,25 @@ def vacancy():
         flask_login.current_user.otkliks = ''
     if request.method == "POST":
         vac = db_ses.query(Vacancy).filter_by(id=date).first()
-        print(vac)
-        if flask_login.current_user.works:
-            db_ses.query(User).filter_by(id=flask_login.current_user.child).first().works += f', {vac.id}'
+        print(vac, flask_login.current_user.role)
+        if flask_login.current_user.role == "option2":
+            print("qwertyuiop")
+            if db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent:
+                print("qwertyuio")
+                db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent += f', {vac.id}'
+            else:
+                print("qwertyuiol;'")
+                db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent = f', {vac.id}'
+            db_ses.commit()
+            return redirect('/vacancies')
         else:
-            db_ses.query(User).filter_by(id=flask_login.current_user.child).first().works = f', {vac.id}'
-        db_ses.commit()
-        data_works = []
-        works = db_ses.query(Vacancy).all()
-        for e in works:
-            work = e
-            one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
-            data_works.append(one_work)
-        return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
+            data_works = []
+            works = db_ses.query(Vacancy).all()
+            for e in works:
+                work = e
+                one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
+                data_works.append(one_work)
+            return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
     else:
         vac = db_ses.query(Vacancy).filter_by(id=date).first()
         owner = db_ses.query(User).filter_by(id=vac.owner).first()
