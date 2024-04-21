@@ -187,8 +187,23 @@ def profile():
                                    db_ses=db_ses, User=User, Vacancy=Vacancy, vacancies=data_works,
                                    count=len(data_works))
         elif flask_login.current_user.role == "option2":
+            data_works = []
+            works = []
+            if flask_login.current_user.child:
+                if db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent:
+                    works = list(
+                        map(int, db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent.split(", ")[1:]))
+
+            for a in works:
+                work = db_ses.query(Vacancy).filter(Vacancy.id == a).first()
+                print(work)
+                one_work = (
+                work.name, work.minimal_age, work.town, work.salary,
+                len(work.description), work.id)
+                data_works.append(one_work)
             return render_template("profile_parent.html", current_user=flask_login.current_user,
-                                   db_ses=db_ses, User=User, Vacancy=Vacancy)
+                                   db_ses=db_ses, User=User, Vacancy=Vacancy, vacancies=data_works,
+                                   count=len(data_works))
         elif flask_login.current_user.role == "option3":
             print(1)
             us_contacts = flask_login.current_user.contacts

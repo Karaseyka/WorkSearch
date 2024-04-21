@@ -215,40 +215,56 @@
                             <div class="pro-child-form" style="width: 20rem; height: 7rem;">
                                 <div class="mb-4 row"></div>
                                 {% if current_user.role == 'option2' %}
-                                <div class="pro-child-btns"  >
-                                    <form method="post" class="main-form">
-                                        <button type="submit"
-                                                class="btn btn-primary btn-submit"
-                                                style="width: 100%;"
-                                                >
-                                            Добавить вакансию ребёнку
-                                        </button>
-                                    </form>
-                                </div>
+                                    {% if ids in db_ses.query(User).filter_by(id=current_user.child).first().worksfromparent.split(', ')[1:] %}
+                                        <div class="pro-child-btns">
+                                            <button type="submit"
+                                                    class="btn btn-outline-secondary btn-submit pro-btn"
+                                                    form="otklik" disabled>
+                                                Добавлено
+                                            </button>
+                                        </div>
+                                        <p class="pro-child-font">
+                                            Вашему ребенку добавилась эта вакансия.
+    <!--                                        (если вы их не указали, то сделайте это тут 👉ТУТ БУДЕТ ССЫЛКА)-->
+                                        </p>
+                                    {% else %}
+                                        <div class="pro-child-btns"  >
+                                            <form method="post" class="main-form">
+                                                <button type="submit"
+                                                        class="btn btn-primary btn-submit"
+                                                        style="width: 100%;"
+                                                        >
+                                                    Добавить вакансию ребёнку
+                                                </button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                {% elif current_user.role == 'option1' %}
 
-                                {% elif ids in current_user.otkliks.split(', ') %}
-                                    <div class="pro-child-btns">
-                                        <button type="submit"
-                                                class="btn btn-outline-secondary btn-submit pro-btn"
-                                                form="otklik" disabled>
-                                            Откликнуто
-                                        </button>
-                                    </div>
-                                    <p class="pro-child-font">
-                                        Работодателю уже пришло уведомление. Ожидайте, пока свяжется с вами работодатель по указанным вами контактами. Либо свяжитесь с ним сами.
-<!--                                        (если вы их не указали, то сделайте это тут 👉ТУТ БУДЕТ ССЫЛКА)-->
-                                    </p>
-                                {% else %}
-                                    <div class="pro-child-btns">
-                                        <button type="submit"
-                                                class="btn btn-primary btn-submit pro-btn"
-                                                form="otklik">
-                                            Откликнуться
-                                        </button>
-                                    </div>
-                                    <p class="pro-child-font">
-                                        Работодателю придет уведомление и он свяжется с вами по указанным вами контактами.
-                                    </p>
+                                    {% if ids in current_user.otkliks.split(', ') %}
+                                        <div class="pro-child-btns">
+                                            <button type="submit"
+                                                    class="btn btn-outline-secondary btn-submit pro-btn"
+                                                    form="otklik" disabled>
+                                                Откликнуто
+                                            </button>
+                                        </div>
+                                        <p class="pro-child-font">
+                                            Работодателю уже пришло уведомление. Ожидайте, пока свяжется с вами работодатель по указанным вами контактами. Либо свяжитесь с ним сами.
+    <!--                                        (если вы их не указали, то сделайте это тут 👉ТУТ БУДЕТ ССЫЛКА)-->
+                                        </p>
+                                    {% else %}
+                                        <div class="pro-child-btns">
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-submit pro-btn"
+                                                    form="otklik">
+                                                Откликнуться
+                                            </button>
+                                        </div>
+                                        <p class="pro-child-font">
+                                            Работодателю придет уведомление и он свяжется с вами по указанным вами контактами.
+                                        </p>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>

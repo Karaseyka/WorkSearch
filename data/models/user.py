@@ -25,3 +25,4 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     parentreq = sqlalchemy.Column(sqlalchemy.Integer)
     otkliks = sqlalchemy.Column(sqlalchemy.String)
     worksfromparent = sqlalchemy.Column(sqlalchemy.String)
+    worksfromparent = sqlalchemy.Column(sqlalchemy.String)
