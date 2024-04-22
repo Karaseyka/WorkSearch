@@ -8,6 +8,7 @@ from flask import request
 from data.database import db_session
 from data.models.user import User
 from data.models.vacancy import Vacancy
+from requests import get
 
 app = Flask(__name__)
 app.secret_key = 'some key'
@@ -331,11 +332,13 @@ def new_vacancy():
 @app.route("/vacancies", methods=["GET", "POST"])
 @login_required
 def vacancies():
+    vacancies_all = get_vacancies()
     if request.method == 'POST':
         data_works = []
         works = []
         fil = request.form['find']
         works = db_ses.query(Vacancy).all()
+        print(vacancies_all)
         for e in works:
             work = e
             one_work = (work.name, work.minimal_age, work.town, work.salary,
@@ -565,6 +568,10 @@ def accept_parent():
 @app.errorhandler(401)
 def unauthorized_request(_):
     return "Для работы с сайтом необходима авторизация"
+
+
+def get_vacancies():
+    return get('https://worckserch.glitch.me/api/vacancies').json()
 
 
 if __name__ == "__main__":
