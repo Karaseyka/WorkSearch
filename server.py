@@ -20,11 +20,13 @@ manager.init_app(app)
 db_ses = db_session.create_session()
 
 
+# загрузка ползователя
 @manager.user_loader
 def load_user(user_id):
     return db_ses.query(User).get(user_id)
 
 
+# выход из акка ползователя
 @app.route('/logout/')
 @login_required
 def logout():
@@ -33,16 +35,19 @@ def logout():
     return redirect(url_for('welcome_page'))
 
 
+# стартовый экран
 @app.route("/")
 def welcome_page():
     return render_template("welcome_page.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
 
 
+# экран инструкции
 @app.route("/instruction")
 def instruction():
     return render_template("instruction.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
 
 
+# экран регистрации
 @app.route("/registration", methods=["POST"])
 def registration_post():
     if request.form['password'] == request.form['passwordSec']:
@@ -67,6 +72,7 @@ def registration_get():
     return render_template("registration.html")
 
 
+# экран входа
 @app.route("/enter", methods=["POST"])
 def enter_post():
     login = request.form.get("email")
@@ -89,6 +95,7 @@ def enter_get():
     return render_template("enter.html")
 
 
+# экран профиля
 @app.route("/profile", methods=["POST", "GET"])
 @login_required
 def profile():
@@ -180,7 +187,7 @@ def profile():
             for a in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == a).first()
                 print(work)
-                one_work = (work.name, work.minimal_age, work.town, work.salary,len(work.description), work.id)
+                one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
                 data_works.append(one_work)
 
             return render_template("profile_child.html", current_user=flask_login.current_user,
@@ -192,14 +199,15 @@ def profile():
             if flask_login.current_user.child:
                 if db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent:
                     works = list(
-                        map(int, db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent.split(", ")[1:]))
+                        map(int, db_ses.query(User).filter_by(
+                            id=flask_login.current_user.child).first().worksfromparent.split(", ")[1:]))
 
             for a in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == a).first()
                 print(work)
                 one_work = (
-                work.name, work.minimal_age, work.town, work.salary,
-                len(work.description), work.id)
+                    work.name, work.minimal_age, work.town, work.salary,
+                    len(work.description), work.id)
                 data_works.append(one_work)
             return render_template("profile_parent.html", current_user=flask_login.current_user,
                                    db_ses=db_ses, User=User, Vacancy=Vacancy, vacancies=data_works,
@@ -230,6 +238,7 @@ def profile():
             return "Технические шоколадки"
 
 
+# удаление контактов
 @app.route("/del_contact", methods=["GET", "POST"])
 @login_required
 def delete_contact():
@@ -249,6 +258,7 @@ def delete_contact():
         return redirect('/profile')
 
 
+# добавить контакы
 @app.route('/add_cont', methods=["POST"])
 @login_required
 def add_contact():
@@ -266,6 +276,7 @@ def add_contact():
     return redirect('/profile')
 
 
+# обновление данных профиля
 @app.route('/update_data', methods=["POST"])
 @login_required
 def update_data():
@@ -278,6 +289,7 @@ def update_data():
     return redirect('/profile')
 
 
+# скачивание резюме
 @app.route("/resume", methods=["GET"])
 @login_required
 def resume():
@@ -292,6 +304,7 @@ def resume():
         return "Резюме не найдено"
 
 
+# скачивание чужого резюме
 @app.route("/resume/<user>", methods=["GET"])
 @login_required
 def resume_user(user):
@@ -306,6 +319,7 @@ def resume_user(user):
         return "Резюме не найдено"
 
 
+# экран создания новой вакансии
 @app.route("/create_vacancy", methods=["POST"])
 @login_required
 def new_vacancy():
@@ -313,6 +327,7 @@ def new_vacancy():
     return render_template('add_vacancy.html', db_ses=db_ses, Vacancy=Vacancy, User=User)
 
 
+# Список вакансий
 @app.route("/vacancies", methods=["GET", "POST"])
 @login_required
 def vacancies():
@@ -326,7 +341,8 @@ def vacancies():
             one_work = (work.name, work.minimal_age, work.town, work.salary,
                         len(work.description), work.id)
             if fil.lower() in work.name.lower() or fil.lower() in work.town.lower():
-                if not flask_login.current_user.parent or str(work.id) in flask_login.current_user.worksfromparent.split(", "):
+                if not flask_login.current_user.parent or str(
+                        work.id) in flask_login.current_user.worksfromparent.split(", "):
                     data_works.append(one_work)
 
         if fil:
@@ -357,6 +373,7 @@ def vacancies():
                                Vacancy=Vacancy, User=User)
 
 
+# переход к вакансии
 @app.route('/go_to_vacancy', methods=['post'])
 @login_required
 def go_vacancy():
@@ -390,6 +407,7 @@ def go_vacancy():
         return redirect('/profile')
 
 
+# редактирование вакансии
 @app.route('/redact_form', methods=['post'])
 @login_required
 def redact_form():
@@ -415,6 +433,7 @@ def redact_form():
     return redirect(url_for('vacancy', vacancy_id=ids))
 
 
+# экран вакансии
 @app.route("/vacancy", methods=["GET", "POST"])
 @login_required
 def vacancy():
@@ -451,12 +470,14 @@ def vacancy():
                                owner=owner, db_ses=db_ses, Vacancy=Vacancy, User=User, ids=str(vac.id))
 
 
+# экран просмотра чужого профиля
 @app.route("/profile_review/<int:user>")
 def profile_review(user):
     return render_template("profile_review.html", db_ses=db_ses, Vacancy=Vacancy, User=User,
                            user=db_ses.query(User).filter_by(id=user).first())
 
 
+# добавление вакансии
 @app.route("/add_vacancies", methods=["POST", "GET"])
 @login_required
 def add_vacancies():
@@ -491,6 +512,7 @@ def add_vacancies():
         return redirect('/vacancies')
 
 
+# отклик на вакансию
 @app.route('/otklik', methods=['POST'])
 @login_required
 def oklik():
@@ -507,11 +529,11 @@ def oklik():
     print(-11010)
     flask_login.current_user.otkliks += ', ' + str(ids)
 
-
     db_ses.commit()
     return redirect('/vacancies')
 
 
+# Запрос к ребёнку
 @app.route("/request_to_child", methods=["POST"])
 @login_required
 def request_to_child():
@@ -523,6 +545,7 @@ def request_to_child():
     return redirect('/profile')
 
 
+# Принятие родителем ребёнка
 @app.route("/accept_parent", methods=["POST"])
 @login_required
 def accept_parent():
@@ -538,6 +561,7 @@ def accept_parent():
     return redirect('/profile')
 
 
+# Если юзер не авторизован
 @app.errorhandler(401)
 def unauthorized_request(_):
     return "Для работы с сайтом необходима авторизация"
