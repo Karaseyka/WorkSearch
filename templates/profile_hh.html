@@ -10,7 +10,8 @@
             <div class="pro-child-flex container">
                 <div class="row">
                     <div class="pro-child-mainform col-7">
-                        <form id="nameEmail" action="/update_data" method="post">
+                        <form id="nameEmail" action="/update_data"
+                              method="post">
                             <div class="mb-3 row pro-child-line">
                                 <label for="staticName"
                                        class="col-sm-2 col-form-label">Имя</label>
@@ -108,7 +109,8 @@
                                                 data-bs-dismiss="modal"
                                                 aria-label="Закрыть"></button>
                                     </div>
-                                    <form action="/add_cont" method="post" enctype="multipart/form-data">
+                                    <form action="/add_cont" method="post"
+                                          enctype="multipart/form-data">
 
                                         <div class="modal-body">
                                             Введите название соцсети и ваш
@@ -118,12 +120,16 @@
                                             <div style="display: flex; justify-content: space-between;">
                                                 <div>
                                                     <p>Соц-сеть</p>
-                                                    <input type="text" name="net" value="" style=""
+                                                    <input type="text"
+                                                           name="net" value=""
+                                                           style=""
                                                            placeholder="Введите название соц-сети">
                                                 </div>
                                                 <div>
                                                     <p>Имя или номер</p>
-                                                    <input type="text" name="way" value="" style=""
+                                                    <input type="text"
+                                                           name="way" value=""
+                                                           style=""
                                                            placeholder="Введите ваше имя">
                                                 </div>
                                             </div>
@@ -153,7 +159,8 @@
                             <div class="mb-4 row"></div>
                             <div class="pro-child-btns">
                                 <button type="submit"
-                                        class="btn btn-primary btn-submit pro-btn" form="nameEmail">
+                                        class="btn btn-primary btn-submit pro-btn"
+                                        form="nameEmail">
                                     Сохранить
                                 </button>
                             </div>
@@ -172,30 +179,50 @@
             <div class="mb-3 row pro-child-text">Ваши вакансии</div>
             <div class="pro-child-flex container">
                 {% if vacancies %}
-                {% for i in range(0, count, 3) %}
-                <div style="display: flex; justify-content: space-between;">
-                    {% for e in vacancies[i:i+3] %}
-                    <form action="/go_to_vacancy" style="border: 1px solid DarkGray; height: 300px;
-                            width: 320px; background-color: Honeydew; border-radius: 5px;
+                <div class="container">
+                    <div class="row"
+                         style="display: flex; justify-content: space-between;">
+
+                        {% for i in range(0, count) %}
+                        <!--                        <div style="display: flex; justify-content: space-between;">-->
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+
+                            <form action="/go_to_vacancy" style="border: 1px solid DarkGray;
+                            min-height: 300px;
+                            max-height: 400px;
+                            max-width: 320px;
+                            min-width: 160px;
+                            background-color: Honeydew; border-radius: 5px;
                             padding: 5px; margin: 10px; display: flex; flex-direction: column;
                             justify-content: space-between; font-size: 20px;">
-                        <div>
-                            <h4>{{ e[0] }}</h4>
-                            <p>От {{e[1]}} лет</p>
-                            <p class="w-100">Место работы: {{e[2]}}</p>
-                            <p style="font-weight: bold;">Зарплата: {{e[3]}} рублей в неделю</p>
+                                <div>
+                                    <h4>{{ vacancies[i][0] }}</h4>
+                                    <p>От {{vacancies[i][1]}} лет</p>
+                                    <p class="w-100">Место работы:
+                                        {{vacancies[i][2]}}</p>
+                                    <p style="font-weight: bold;">Зарплата:
+                                        {{vacancies[i][3]}} рублей в неделю</p>
+                                </div>
+                                <div>
+                                    <button formmethod="post"
+                                            id={{vacancies[i][5]}}
+                                            name="go-{{vacancies[i][5]}}"
+                                            class="btn btn-outline-primary btn-show pro-btn"
+                                            type="submit">
+                                        Перейти
+                                    </button>
+                                    <button formmethod="post"
+                                            name="del-{{vacancies[i][5]}}"
+                                            type="submit"
+                                            class="btn btn-outline-danger">
+                                        Удалить
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <div>
-                            <button formmethod="post" id={{e[5]}} name="go-{{e[5]}}" class="btn btn-outline-primary btn-show pro-btn"
-                                    type="submit">
-                                Перейти
-                            </button>
-                            <button formmethod="post" name="del-{{e[5]}}" type="submit" class="btn btn-outline-danger">Удалить</button>
-                        </div>
-                    </form>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-                {% endfor %}
                 {%else%}
                 <h3> У вас нет вакансий </h3>
                 {%endif%}

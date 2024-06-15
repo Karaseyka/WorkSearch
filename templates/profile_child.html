@@ -11,55 +11,78 @@
             <div class="pro-child-flex container">
                 <div class="row">
                     <div class="pro-child-mainform col-7">
-                        <form id="usdt" method="post" enctype="multipart/form-data">
+                        <form id="usdt" method="post"
+                              enctype="multipart/form-data">
                             <div class="mb-3 row pro-child-line">
-                                <label for="staticName" class="col-sm-2 col-form-label">Имя</label>
+                                <label for="staticName"
+                                       class="col-sm-2 col-form-label">Имя</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control-plaintext" name="staticName" id="staticName"
+                                    <input type="text"
+                                           class="form-control-plaintext"
+                                           name="staticName" id="staticName"
                                            value={{current_user.name}}>
                                 </div>
                             </div>
                             <div class="mb-3 row pro-child-line">
-                                <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                                <label for="staticEmail"
+                                       class="col-sm-2 col-form-label">Email</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control-plaintext" name="staticEmail"
-                                           id="staticEmail" value={{current_user.email}}>
+                                    <input type="text"
+                                           class="form-control-plaintext"
+                                           name="staticEmail"
+                                           id="staticEmail"
+                                           value={{current_user.email}}>
                                 </div>
                             </div>
                             <div class="mb-3 row pro-child-line">
-                                <label for="staticRole" class="col-sm-2 col-form-label">Роль</label>
+                                <label for="staticRole"
+                                       class="col-sm-2 col-form-label">Роль</label>
                                 <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="staticRole"
+                                    <input type="text" readonly
+                                           class="form-control-plaintext"
+                                           id="staticRole"
                                            value="Ребёнок">
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="filetxt" class="form-label">Расскажите о себе</label>
+                                <label for="filetxt" class="form-label">Расскажите
+                                    о себе</label>
                                 {% if current_user.resumetxt %}
-                                <textarea class="form-control" name="filetxt" id="filetxt" rows="3">{{current_user.resumetxt}}</textarea>
+                                <textarea class="form-control" name="filetxt"
+                                          id="filetxt" rows="3">{{current_user.resumetxt}}</textarea>
                                 {% else %}
-                                <textarea class="form-control" name="filetxt" id="filetxt" rows="3"></textarea>
+                                <textarea class="form-control" name="filetxt"
+                                          id="filetxt" rows="3"></textarea>
                                 {% endif %}
                             </div>
                             <div>
-                                <label for="file" class="form-label">Или прикрепите резюме</label>
-                                <input class="form-control" type="file" name="file" id="file">
+                                <label for="file" class="form-label">Или
+                                    прикрепите резюме</label>
+                                <input class="form-control" type="file"
+                                       name="file" id="file">
                             </div>
                             <div class="mb-0">
 
-                                <button type="button" onclick="window.location.href = '/resume'"
-                                        class="left btn btn-outline-primary btn-show pro-btn">Просмотр
+                                <button type="button"
+                                        onclick="window.location.href = '/resume'"
+                                        class="left btn btn-outline-primary btn-show pro-btn">
+                                    Просмотр
                                 </button>
 
                             </div>
                         </form>
                         {% if current_user.parentreq %}
 
-                        <form action="/accept_parent" method="post" enctype="multipart/form-data">
+                        <form action="/accept_parent" method="post"
+                              enctype="multipart/form-data">
                             <div class="mb-3 row pro-child-line">
-                                <label for="staticRole" class="col-sm-2 col-form-label">Запрос родителя</label>
+                                <label for="staticRole"
+                                       class="col-sm-2 col-form-label">Запрос
+                                    родителя</label>
                                 <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="req"
+                                    <input type="text" readonly
+                                           class="form-control-plaintext"
+                                           id="req"
                                            value="{{db_ses.query(User).filter_by(id=current_user.parentreq).first().name}} : {{db_ses.query(User).filter_by(id=current_user.parentreq).first().email}}">
                                     <button name="delete"
                                             style="background-color: a9a9a9; border: 0px solid black; border-radius: 5px; padding: 2px 10px">
@@ -74,27 +97,35 @@
                         </form>
                         {%endif%}
                         {% if current_user.parent %}
-                            <div class="mb-3 row pro-child-line">
-                                <label for="staticRole" class="col-sm-2 col-form-label">Родитель</label>
-                                <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="parent"
-                                           value="{{db_ses.query(User).filter_by(id=current_user.parent).first().name}} : {{db_ses.query(User).filter_by(id=current_user.parent).first().email}}">
-                                </div>
+                        <div class="mb-3 row pro-child-line">
+                            <label for="staticRole"
+                                   class="col-sm-2 col-form-label">Родитель</label>
+                            <div class="col-sm-10">
+                                <input type="text" readonly
+                                       class="form-control-plaintext"
+                                       id="parent"
+                                       value="{{db_ses.query(User).filter_by(id=current_user.parent).first().name}} : {{db_ses.query(User).filter_by(id=current_user.parent).first().email}}">
                             </div>
+                        </div>
                         {%endif%}
                         <div class="mb-3 row"></div>
                     </div>
-                    <div class="pro-child-mainform col-3" style="background-color: white;">
+                    <div class="pro-child-mainform col-3"
+                         style="background-color: white;">
                         <div class="pro-child-form">
                             <div class="mb-4 row"></div>
                             <div class="pro-child-btns">
-                                <button type="submit" class="btn btn-primary btn-submit pro-btn" form="usdt">Сохранить
+                                <button type="submit"
+                                        class="btn btn-primary btn-submit pro-btn"
+                                        form="usdt">Сохранить
                                 </button>
                             </div>
                             <p class="pro-child-font">
-                                Нажимая на кнопку "Сохранить", вы принимаете правила пользовательского
+                                Нажимая на кнопку "Сохранить", вы принимаете
+                                правила пользовательского
                                 соглашения и
-                                политики конфиденциальности, а также даете согласие на обработку персональных
+                                политики конфиденциальности, а также даете
+                                согласие на обработку персональных
                                 данных
                             </p>
                         </div>
@@ -105,29 +136,41 @@
             <div class="mb-3 row pro-child-text">Ваши вакансии</div>
             <div class="pro-child-flex container">
                 {% if vacancies %}
-                {% for i in range(0, count, 3) %}
-                <div style="display: flex; justify-content: space-between;">
-                    {% for e in vacancies[i:i+3] %}
-                    <form action="/go_to_vacancy" style="border: 1px solid DarkGray; height: 300px;
-                            width: 320px; background-color: Honeydew; border-radius: 5px;
+                <div class="container">
+                    <div class="row"
+                         style="display: flex; justify-content: space-between;">
+                        {% for i in range(0, count) %}
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <form action="/go_to_vacancy" style="border: 1px solid DarkGray;
+                            min-height: 300px;
+                            max-height: 400px;
+                            max-width: 320px;
+                            min-width: 160px;
+                            background-color: Honeydew; border-radius: 5px;
                             padding: 5px; margin: 10px; display: flex; flex-direction: column;
                             justify-content: space-between; font-size: 20px;">
-                        <div>
-                            <h4>{{ e[0] }}</h4>
-                            <p>От {{e[1]}} лет</p>
-                            <p class="w-100">Место работы: {{e[2]}}</p>
-                            <p style="font-weight: bold;">Зарплата: {{e[3]}} рублей в неделю</p>
+                                <div>
+                                    <h4>{{ vacancies[i][0] }}</h4>
+                                    <p>От {{vacancies[i][1]}} лет</p>
+                                    <p class="w-100">Место работы:
+                                        {{vacancies[i][2]}}</p>
+                                    <p style="font-weight: bold;">Зарплата:
+                                        {{vacancies[i][3]}} рублей в неделю</p>
+                                </div>
+                                <div>
+                                    <button formmethod="post"
+                                            id={{vacancies[i][5]}}
+                                            name="go-{{vacancies[i][5]}}"
+                                            class="btn btn-outline-primary btn-show pro-btn"
+                                            type="submit">
+                                        Перейти
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <div>
-                            <button formmethod="post" id={{e[5]}} name="go-{{e[5]}}" class="btn btn-outline-primary btn-show pro-btn"
-                                    type="submit">
-                                Перейти
-                            </button>
-                        </div>
-                    </form>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-                {% endfor %}
                 {%else%}
                 <h3> У вас нет вакансий </h3>
                 {%endif%}
