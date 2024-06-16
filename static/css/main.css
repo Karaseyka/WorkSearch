@@ -98,6 +98,20 @@ div {
     min-width: 100px;
 }
 
+.page-bar {
+    border: 0px solid white;
+    background-color: white;
+    max-height: 70px;
+    max-width: 70px;
+    min-height: 30px;
+    min-width: 30px;
+}
+
+.page-bar:hover {
+    transition: 0.3s;
+    background-color: Honeydew;
+}
+
 .btn-submit {
     margin: 3px;
     justify-content: center;

@@ -20,8 +20,7 @@
             <div class="container">
                 <div class="row" style="display: flex; justify-content: space-between;">
 
-                {% for i in range(0, count) %}
-<!--                    <div style="display: flex; justify-content: space-between;">-->
+                {% for i in range(start_vac, end_vac) %}
                     <div class="col-lg-4 col-md-6 col-sm-12">
                         <form action="/go_to_vacancy" method="post" style="border: 1px solid DarkGray;
                         min-height: 300px;
@@ -44,7 +43,6 @@
 
                         </form>
                     </div>
-<!--                    </div>-->
                 {% endfor %}
                 </div>
             </div>
@@ -55,9 +53,29 @@
                     <h3>Пока что нет вакансий</h3>
                 {% endif %}
             {% endif %}
+            <div>
+                <form style="display: flex; justify-content: center; font-size: 40px;" action="/vacancy_page" method="post">
+                    <input hidden name="page" value="{{current_page}}">
+                    <button name="start" class="page-bar">«</button>
+                    <button name="prev" class="page-bar">‹</button>
+                    <div>
+                        {% for n in pages %}
+                            {% if n == current_page %}
+                                <button name="{{n}}" class="page-bar" style="border-bottom: 3px solid green;">{{ n }}</button>
+                            {% else %}
+                                <button name="{{n}}" class="page-bar">{{ n }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <button name="next" class="page-bar">›</button>
+                    <button name="end" class="page-bar">»</button>
+                </form>
+
+            </div>
         </div>
         <div class="col-1"></div>
     </div>
+    <div class="mb-5 row"></div>
 </div>
 {% block main %}
 

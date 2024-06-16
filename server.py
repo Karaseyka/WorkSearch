@@ -39,13 +39,15 @@ def logout():
 # стартовый экран
 @app.route("/")
 def welcome_page():
-    return render_template("welcome_page.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
+    return render_template("welcome_page.html", db_ses=db_ses, Vacancy=Vacancy,
+                           User=User)
 
 
 # экран инструкции
 @app.route("/instruction")
 def instruction():
-    return render_template("instruction.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
+    return render_template("instruction.html", db_ses=db_ses, Vacancy=Vacancy,
+                           User=User)
 
 
 # экран регистрации
@@ -83,7 +85,8 @@ def enter_post():
         if user and check_password_hash(user.password, pw):
             login_user(user)
 
-            return render_template("instruction.html", db_ses=db_ses, Vacancy=Vacancy, User=User)
+            return render_template("instruction.html", db_ses=db_ses,
+                                   Vacancy=Vacancy, User=User)
         else:
             return render_template("enter.html")
 
@@ -122,7 +125,8 @@ def profile():
                         db_ses.commit()
                         return render_template("profile_child.html",
                                                current_user=flask_login.current_user,
-                                               db_ses=db_ses, Vacancy=Vacancy, User=User)
+                                               db_ses=db_ses, Vacancy=Vacancy,
+                                               User=User)
                     except:
                         return "Неудалось добавить файл"
                 else:
@@ -133,7 +137,8 @@ def profile():
                 db_ses.commit()
                 return render_template("profile_child.html",
                                        current_user=flask_login.current_user,
-                                       db_ses=db_ses, Vacancy=Vacancy, User=User)
+                                       db_ses=db_ses, Vacancy=Vacancy,
+                                       User=User)
             elif txt:
                 flask_login.current_user.name = name
                 flask_login.current_user.email = email
@@ -142,7 +147,8 @@ def profile():
                 db_ses.commit()
                 return render_template("profile_child.html",
                                        current_user=flask_login.current_user,
-                                       db_ses=db_ses, Vacancy=Vacancy, User=User)
+                                       db_ses=db_ses, Vacancy=Vacancy,
+                                       User=User)
         # parent
         if flask_login.current_user.role == "option2":
             name = request.form["staticName"]
@@ -183,25 +189,32 @@ def profile():
             data_works = []
             works = []
             if flask_login.current_user.otkliks:
-                works = list(map(int, flask_login.current_user.otkliks.split(", ")[1:]))
+                works = list(
+                    map(int, flask_login.current_user.otkliks.split(", ")[1:]))
 
             for a in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == a).first()
                 print(work)
-                one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
+                one_work = (
+                work.name, work.minimal_age, work.town, work.salary,
+                len(work.description), work.id)
                 data_works.append(one_work)
 
-            return render_template("profile_child.html", current_user=flask_login.current_user,
-                                   db_ses=db_ses, User=User, Vacancy=Vacancy, vacancies=data_works,
+            return render_template("profile_child.html",
+                                   current_user=flask_login.current_user,
+                                   db_ses=db_ses, User=User, Vacancy=Vacancy,
+                                   vacancies=data_works,
                                    count=len(data_works))
         elif flask_login.current_user.role == "option2":
             data_works = []
             works = []
             if flask_login.current_user.child:
-                if db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent:
+                if db_ses.query(User).filter_by(
+                        id=flask_login.current_user.child).first().worksfromparent:
                     works = list(
                         map(int, db_ses.query(User).filter_by(
-                            id=flask_login.current_user.child).first().worksfromparent.split(", ")[1:]))
+                            id=flask_login.current_user.child).first().worksfromparent.split(
+                            ", ")[1:]))
 
             for a in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == a).first()
@@ -210,8 +223,10 @@ def profile():
                     work.name, work.minimal_age, work.town, work.salary,
                     len(work.description), work.id)
                 data_works.append(one_work)
-            return render_template("profile_parent.html", current_user=flask_login.current_user,
-                                   db_ses=db_ses, User=User, Vacancy=Vacancy, vacancies=data_works,
+            return render_template("profile_parent.html",
+                                   current_user=flask_login.current_user,
+                                   db_ses=db_ses, User=User, Vacancy=Vacancy,
+                                   vacancies=data_works,
                                    count=len(data_works))
         elif flask_login.current_user.role == "option3":
             print(1)
@@ -229,9 +244,13 @@ def profile():
             for e in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
                 print(work)
-                one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
+                one_work = (
+                work.name, work.minimal_age, work.town, work.salary,
+                len(work.description), work.id)
                 data_works.append(one_work)
-            return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont[1:],
+            return render_template("profile_hh.html",
+                                   current_user=flask_login.current_user,
+                                   contacts=super_cont[1:],
                                    vacancies=data_works,
                                    count=len(data_works),
                                    db_ses=db_ses, Vacancy=Vacancy, User=User)
@@ -253,7 +272,8 @@ def delete_contact():
         else:
             super_cont = []
         print(super_cont)
-        flask_login.current_user.contacts = flask_login.current_user.contacts.replace(f', {delete}', '')
+        flask_login.current_user.contacts = flask_login.current_user.contacts.replace(
+            f', {delete}', '')
         db_ses.commit()
         # return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont)
         return redirect('/profile')
@@ -325,55 +345,109 @@ def resume_user(user):
 @login_required
 def new_vacancy():
     print(12929)
-    return render_template('add_vacancy.html', db_ses=db_ses, Vacancy=Vacancy, User=User)
+    return render_template('add_vacancy.html', db_ses=db_ses, Vacancy=Vacancy,
+                           User=User)
 
 
 # Список вакансий
 @app.route("/vacancies", methods=["GET", "POST"])
 @login_required
 def vacancies():
-    vacancies_all = get_vacancies()
+    show_pages = [1, 2, 3, 4, 5]
+    # vacancies_all = get_vacancies()
+    action = request.args.get('action', None)
+    current_page = int(request.args.get('page', 1))
+    print(67676, action, current_page)
     if request.method == 'POST':
         data_works = []
         works = []
         fil = request.form['find']
         works = db_ses.query(Vacancy).all()
-        print(vacancies_all)
         for e in works:
             work = e
             one_work = (work.name, work.minimal_age, work.town, work.salary,
                         len(work.description), work.id)
             if fil.lower() in work.name.lower() or fil.lower() in work.town.lower():
                 if not flask_login.current_user.parent or str(
-                        work.id) in flask_login.current_user.worksfromparent.split(", "):
+                        work.id) in flask_login.current_user.worksfromparent.split(
+                    ", "):
                     data_works.append(one_work)
 
         if fil:
             return render_template('vacancies.html',
-                                   filter=fil, vacancies=data_works, count=len(data_works), db_ses=db_ses,
-                                   Vacancy=Vacancy, User=User)
+                                   filter=fil, vacancies=data_works,
+                                   count=len(data_works), db_ses=db_ses,
+                                   Vacancy=Vacancy, User=User, current_page=1,
+                                   pages=list(range(1, min(len(data_works) // 12 + 1, 6))), start_vac=0, end_vac=12)
         return render_template('vacancies.html',
-                               filter='', vacancies=data_works, count=len(data_works), db_ses=db_ses, Vacancy=Vacancy,
-                               User=User)
+                               filter='', vacancies=data_works,
+                               count=len(data_works), db_ses=db_ses,
+                               Vacancy=Vacancy,
+                               User=User, current_page=1,
+                               pages=list(range(1, min(len(data_works) // 12 + 1, 6))), start_vac=0, end_vac=12)
     else:
+        print(111)
         data_works = []
         works = []
         if flask_login.current_user.role == "option1" and flask_login.current_user.parent:
             if flask_login.current_user.worksfromparent:
                 works = list(
-                    map(int, flask_login.current_user.worksfromparent.split(", ")[1:]))
+                    map(int,
+                        flask_login.current_user.worksfromparent.split(", ")[1:]))
             for e in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
-                one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
+                one_work = (
+                work.name, work.minimal_age, work.town, work.salary,
+                len(work.description), work.id)
                 data_works.append(one_work)
         else:
             works = db_ses.query(Vacancy).all()
             for e in works:
                 work = e
-                one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
+                one_work = (
+                work.name, work.minimal_age, work.town, work.salary,
+                len(work.description), work.id)
                 data_works.append(one_work)
-        return render_template("vacancies.html", vacancies=data_works, count=len(data_works), db_ses=db_ses,
-                               Vacancy=Vacancy, User=User)
+        pages = len(data_works) // 12
+        if pages * 12 < len(data_works):
+            pages += 1
+        if action:
+            if action == 'prev':
+                if current_page != 1:
+                    current_page -= 1
+            elif action == 'start':
+                current_page = 1
+            elif action == 'end':
+                current_page = pages
+            elif action == 'next':
+                if current_page != pages:
+                    current_page += 1
+            else:
+                current_page = int(action)
+        page_lst = list(range(1, min(pages + 1, 6)))
+        print(page_lst, pages)
+        if 3 < current_page < pages - 3:
+            page_lst = list(map(lambda x: x + current_page - 3, page_lst))
+        start_vac = (current_page - 1) * 12
+        end_vac = start_vac + 12
+        if end_vac > len(data_works):
+            end_vac = len(data_works)
+        print(start_vac, end_vac)
+        return render_template("vacancies.html", vacancies=data_works,
+                               count=len(data_works), db_ses=db_ses,
+                               Vacancy=Vacancy, User=User,
+                               current_page=current_page, pages=page_lst,
+                               start_vac=start_vac, end_vac=end_vac)
+
+
+# странички вакансий
+@app.route('/vacancy_page', methods=['POST'])
+@login_required
+def turn_page():
+    action = list(request.form)[1]
+    page = request.form['page']
+    print(action, page)
+    return redirect(url_for('vacancies', action=action, page=page))
 
 
 # переход к вакансии
@@ -387,7 +461,8 @@ def go_vacancy():
         return redirect(url_for('vacancy', vacancy_id=vacancy_id))
     elif action == 'del':
         db_ses.query(Vacancy).filter(Vacancy.id == vacancy_id).delete()
-        flask_login.current_user.works = flask_login.current_user.works.replace(f', {vacancy_id}', '')
+        flask_login.current_user.works = flask_login.current_user.works.replace(
+            f', {vacancy_id}', '')
         s = flask_login.current_user.otkliks.split(', ')
         new_otkliks = []
         print(s)
@@ -396,13 +471,15 @@ def go_vacancy():
             if vacancy_id != int(e.split('-')[-1]):
                 new_otkliks.append(e)
             else:
-                for user in db_ses.query(User).filter(User.role == 'option1').all():
+                for user in db_ses.query(User).filter(
+                        User.role == 'option1').all():
                     print(user.otkliks, 91910190)
                     if user.otkliks:
                         a = user.otkliks.split(', ')
                         for vac in a[1:]:
                             if int(vac.split('-')[-1]) == vacancy_id:
-                                user.otkliks = user.otkliks.replace(f', {vac}', '')
+                                user.otkliks = user.otkliks.replace(f', {vac}',
+                                                                    '')
 
         flask_login.current_user.otkliks = ', ' + ', '.join(new_otkliks)
 
@@ -448,12 +525,15 @@ def vacancy():
         print(vac, flask_login.current_user.role)
         if flask_login.current_user.role == "option2":
             print("qwertyuiop")
-            if db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent:
+            if db_ses.query(User).filter_by(
+                    id=flask_login.current_user.child).first().worksfromparent:
                 print("qwertyuio")
-                db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent += f', {vac.id}'
+                db_ses.query(User).filter_by(
+                    id=flask_login.current_user.child).first().worksfromparent += f', {vac.id}'
             else:
                 print("qwertyuiol;'")
-                db_ses.query(User).filter_by(id=flask_login.current_user.child).first().worksfromparent = f', {vac.id}'
+                db_ses.query(User).filter_by(
+                    id=flask_login.current_user.child).first().worksfromparent = f', {vac.id}'
             db_ses.commit()
             return redirect('/vacancies')
         else:
@@ -461,22 +541,28 @@ def vacancy():
             works = db_ses.query(Vacancy).all()
             for e in works:
                 work = e
-                one_work = (work.name, work.minimal_age, work.town, work.salary, len(work.description), work.id)
+                one_work = (
+                work.name, work.minimal_age, work.town, work.salary,
+                len(work.description), work.id)
                 data_works.append(one_work)
-            return render_template("vacancies.html", vacancies=data_works, count=len(data_works))
+            return render_template("vacancies.html", vacancies=data_works,
+                                   count=len(data_works))
     else:
         vac = db_ses.query(Vacancy).filter_by(id=date).first()
         owner = db_ses.query(User).filter_by(id=vac.owner).first()
         db_ses.commit()
         contacts = owner.contacts.split(', ')[1:]
-        return render_template("vacancy.html", contacts=contacts, vac=vac, current_user=flask_login.current_user,
-                               owner=owner, db_ses=db_ses, Vacancy=Vacancy, User=User, ids=str(vac.id))
+        return render_template("vacancy.html", contacts=contacts, vac=vac,
+                               current_user=flask_login.current_user,
+                               owner=owner, db_ses=db_ses, Vacancy=Vacancy,
+                               User=User, ids=str(vac.id))
 
 
 # экран просмотра чужого профиля
 @app.route("/profile_review/<int:user>")
 def profile_review(user):
-    return render_template("profile_review.html", db_ses=db_ses, Vacancy=Vacancy, User=User,
+    return render_template("profile_review.html", db_ses=db_ses,
+                           Vacancy=Vacancy, User=User,
                            user=db_ses.query(User).filter_by(id=user).first())
 
 
@@ -526,7 +612,8 @@ def oklik():
     print(user.otkliks)
     if user.otkliks:
 
-        user.otkliks += ', ' + str(flask_login.current_user.id) + '-' + str(ids)
+        user.otkliks += ', ' + str(flask_login.current_user.id) + '-' + str(
+            ids)
     else:
         user.otkliks = ', ' + str(flask_login.current_user.id) + '-' + str(ids)
     print(-11010)
@@ -557,7 +644,8 @@ def accept_parent():
     if list(login)[0] == "delete":
         flask_login.current_user.parentreq = None
     elif list(login)[0] == "accept":
-        db_ses.query(User).filter_by(id=flask_login.current_user.parentreq).first().child = flask_login.current_user.id
+        db_ses.query(User).filter_by(
+            id=flask_login.current_user.parentreq).first().child = flask_login.current_user.id
         flask_login.current_user.parent = flask_login.current_user.parentreq
         flask_login.current_user.parentreq = None
         db_ses.commit()
