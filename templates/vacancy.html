@@ -215,7 +215,23 @@
                             <div class="pro-child-form" style="width: 20rem; height: 7rem;">
                                 <div class="mb-4 row"></div>
                                 {% if current_user.role == 'option2' %}
-                                    {% if ids in db_ses.query(User).filter_by(id=current_user.child).first().worksfromparent.split(', ')[1:] %}
+                                    {% if not current_user.child %}
+                                        <p class="pro-child-font">
+                                            У вас пока что не добавлен ребенок. Можете добавить его в <a href="/profile">Профиле</a>
+                                        </p>
+                                    {% elif not db_ses.query(User).filter_by(id=current_user.child.split(', ')[1]).first().worksfromparent %}
+                                        <div class="pro-child-btns">
+                                            <form method="post" class="main-form">
+                                                <button type="submit"
+                                                        class="btn btn-primary btn-submit"
+                                                        style="width: 100%;">
+                                                    Добавить вакансию ребёнку
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <p class="pro-child-font">Она будет отображаться в списке вакансий вашего ребенка</p>
+
+                                    {% elif ids in db_ses.query(User).filter_by(id=current_user.child.split(', ')[1]).first().worksfromparent.split(', ')[1:] %}
                                         <div class="pro-child-btns">
                                             <button type="submit"
                                                     class="btn btn-outline-secondary btn-submit pro-btn"
@@ -223,17 +239,18 @@
                                                 Добавлено
                                             </button>
                                         </div>
+
                                         <p class="pro-child-font">
                                             Вашему ребенку добавилась эта вакансия.
     <!--                                        (если вы их не указали, то сделайте это тут 👉ТУТ БУДЕТ ССЫЛКА)-->
                                         </p>
+
                                     {% else %}
                                         <div class="pro-child-btns"  >
                                             <form method="post" class="main-form">
                                                 <button type="submit"
                                                         class="btn btn-primary btn-submit"
-                                                        style="width: 100%;"
-                                                        >
+                                                        style="width: 100%;">
                                                     Добавить вакансию ребёнку
                                                 </button>
                                             </form>

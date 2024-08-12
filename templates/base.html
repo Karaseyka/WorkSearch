@@ -73,7 +73,7 @@
                                             <div class="modal-body " style="border-bottom: 1px solid grey;">
     <!--                                            Тут все об уведомлении-->
 
-                                                <p>Отклик от <a href="/profile_review/{{e.split("-")[0]}}">{{db_ses.query(User).filter_by(id=e.split("-")[0]).first().email}}</a> на вакансию {{db_ses.query(Vacancy).filter(Vacancy.id==e.split("-")[1]).first().name.lower()}}</p>
+                                                <p>Отклик от <a href="/profile_review/{{e.split('-')[0]}}">{{db_ses.query(User).filter_by(id=e.split("-")[0]).first().email}}</a> на вакансию {{db_ses.query(Vacancy).filter(Vacancy.id==e.split("-")[1]).first().name.lower()}}</p>
                                             </div>
                                             {% endfor %}
                                             <div class="modal-footer">
@@ -85,6 +85,8 @@
 
                                             </div>
                                         </form>
+                                        {% else %}
+                                            <h3>Пока что никто не откликнулся</h3>
 
                                         {% endif %}
                                     </div>

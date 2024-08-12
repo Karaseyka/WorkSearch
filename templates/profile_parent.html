@@ -43,29 +43,57 @@
                                 </div>
                             </div>
                         </form>
+                        <div class="mb-3 row pro-child-line">
+                            <label for="staticRole"
+                                   class="col-sm-2 col-form-label">Ребёнок</label>
+        <!--                                <div class="col-sm-10">-->
+        <!--                                    <input type="text" readonly-->
+        <!--                                           class="form-control-plaintext"-->
+        <!--                                           id="NoChild"-->
+        <!--                                           value="Не указано">-->
+        <!--                                </div>-->
+                            {% if not current_user.child %}
+                                <div class="col-sm-10">
+                                    <input type="text" readonly
+                                           class="form-control-plaintext"
+                                           value="Не указано">
+
+                                </div>
+                            {% else %}
+                                <div class="col-sm-10">
+                                    {% for e in children %}
+                                    <form action="/del_child" method="post"
+                                          style="display: flex; justify-content: space-between; margin: 3px 2px;">
+
+                                        <input type="text" readonly
+                                               class="form-control-plaintext"
+                                               name="child_e"
+                                               value="{{ e[1] }}    {{ e[2] }}">
+<!--                                        <button name="delete" value="{{ e[0] }}"-->
+<!--                                                style="background-color: a9a9a9; border: 0px solid black; border-radius: 5px; padding: 2px 10px">-->
+<!--                                            Удалить-->
+<!--                                        </button>-->
+
+                                    </form>
+                                    {% endfor %}
+
+                                </div>
+                            {% endif %}
+                        </div>
+
                         <form id="add" name="add" method="post"
                               action="/request_to_child"
                               enctype="multipart/form-data">
                             <div class="mb-3 row pro-child-line">
                                 <label for="staticRole"
-                                       class="col-sm-2 col-form-label">Ребёнок</label>
-                                <label for="staticRole"
                                        class="col-form-label fs-6">Чтобы
-                                    добавить ребёнка впишите
-                                    его почту</label>
+                                    добавить ребёнка введите
+                                    его почту в поле ниже</label>
                                 <div class="col-sm-10">
-                                    {% if current_user.child %}
-                                    <input placeholder="Введите почту ребёнка"
-                                           type="text"
-                                           class="form-control-plaintext"
-                                           id="child" name="child"
-                                           value="{{db_ses.query(User).filter_by(id=current_user.child).first().email}}">
-                                    {% else %}
                                     <input placeholder="Введите почту ребёнка"
                                            type="text"
                                            class="form-control-plaintext"
                                            name="child" required>
-                                    {%endif%}
                                 </div>
                             </div>
                             <button form="add" type="submit"

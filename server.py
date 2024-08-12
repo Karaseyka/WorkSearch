@@ -177,6 +177,7 @@ def profile():
                     work.name, work.minimal_age, work.town, work.salary,
                     len(work.description), work.id)
                 data_works.append(one_work)
+
             return render_template("profile_hh.html",
                                    current_user=flask_login.current_user,
                                    contacts=super_cont[1:],
@@ -196,8 +197,8 @@ def profile():
                 work = db_ses.query(Vacancy).filter(Vacancy.id == a).first()
                 print(work)
                 one_work = (
-                work.name, work.minimal_age, work.town, work.salary,
-                len(work.description), work.id)
+                    work.name, work.minimal_age, work.town, work.salary,
+                    len(work.description), work.id)
                 data_works.append(one_work)
 
             return render_template("profile_child.html",
@@ -210,10 +211,12 @@ def profile():
             works = []
             if flask_login.current_user.child:
                 if db_ses.query(User).filter_by(
-                        id=flask_login.current_user.child).first().worksfromparent:
+                        id=flask_login.current_user.child.split(', ')[
+                            1]).first().worksfromparent:
                     works = list(
                         map(int, db_ses.query(User).filter_by(
-                            id=flask_login.current_user.child).first().worksfromparent.split(
+                            id=flask_login.current_user.child.split(', ')[
+                                1]).first().worksfromparent.split(
                             ", ")[1:]))
 
             for a in works:
@@ -223,11 +226,21 @@ def profile():
                     work.name, work.minimal_age, work.town, work.salary,
                     len(work.description), work.id)
                 data_works.append(one_work)
+
+            children = []
+            if flask_login.current_user.child:
+                cld_lst = flask_login.current_user.child.split(', ')[1:]
+                for e in cld_lst:
+                    child = db_ses.query(User).filter(
+                        User.id == int(e)).first()
+                    print(child.name, child.email)
+                    children.append((child.id, child.name, child.email))
+
             return render_template("profile_parent.html",
                                    current_user=flask_login.current_user,
                                    db_ses=db_ses, User=User, Vacancy=Vacancy,
                                    vacancies=data_works,
-                                   count=len(data_works))
+                                   count=len(data_works), children=children)
         elif flask_login.current_user.role == "option3":
             print(1)
             us_contacts = flask_login.current_user.contacts
@@ -245,8 +258,8 @@ def profile():
                 work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
                 print(work)
                 one_work = (
-                work.name, work.minimal_age, work.town, work.salary,
-                len(work.description), work.id)
+                    work.name, work.minimal_age, work.town, work.salary,
+                    len(work.description), work.id)
                 data_works.append(one_work)
             return render_template("profile_hh.html",
                                    current_user=flask_login.current_user,
@@ -256,6 +269,30 @@ def profile():
                                    db_ses=db_ses, Vacancy=Vacancy, User=User)
         else:
             return "Технические шоколадки"
+
+
+# # Удаление ребенка для родителя
+# @app.route("/del_child", methods=["GET", "POST"])
+# @login_required
+# def delete_child():
+#     print(165, request.method)
+#     if request.method == "POST":
+#         delete = request.form["delete"]
+#         print(delete)
+#         # us_contacts = flask_login.current_user.child
+#         # if us_contacts is not None:
+#         #     super_cont = us_contacts.split(', ')
+#         # else:
+#         #     super_cont = []
+#         # print(super_cont)
+#         d_child = db_ses.query(User).filter(User.id == delete).first()
+#         d_child.parent = ''
+#         d_child.worksfromparent = ''
+#         flask_login.current_user.child = flask_login.current_user.child.replace(
+#             f', {delete}', '')
+#         db_ses.commit()
+#         # return render_template("profile_hh.html", current_user=flask_login.current_user, contacts=super_cont)
+#         return redirect('/profile')
 
 
 # удаление контактов
@@ -362,12 +399,14 @@ def vacancies():
         data_works = []
         works = []
         fil = request.form['find']
+        print(fil)
         works = db_ses.query(Vacancy).all()
         for e in works:
             work = e
             one_work = (work.name, work.minimal_age, work.town, work.salary,
                         len(work.description), work.id)
             if fil.lower() in work.name.lower() or fil.lower() in work.town.lower():
+                print(fil, work.name)
                 if not flask_login.current_user.parent or str(
                         work.id) in flask_login.current_user.worksfromparent.split(
                     ", "):
@@ -378,13 +417,19 @@ def vacancies():
                                    filter=fil, vacancies=data_works,
                                    count=len(data_works), db_ses=db_ses,
                                    Vacancy=Vacancy, User=User, current_page=1,
-                                   pages=list(range(1, min(len(data_works) // 12 + 1, 6))), start_vac=0, end_vac=12)
+                                   pages=list(range(1, min(len(
+                                       data_works) // 12 + 1, 6))),
+                                   start_vac=0,
+                                   end_vac=min(12, len(data_works)))
         return render_template('vacancies.html',
                                filter='', vacancies=data_works,
                                count=len(data_works), db_ses=db_ses,
                                Vacancy=Vacancy,
                                User=User, current_page=1,
-                               pages=list(range(1, min(len(data_works) // 12 + 1, 6))), start_vac=0, end_vac=12)
+                               pages=list(range(1,
+                                                min(len(data_works) // 12 + 1,
+                                                    6))), start_vac=0,
+                               end_vac=min(12, len(data_works)))
     else:
         print(111)
         data_works = []
@@ -393,20 +438,21 @@ def vacancies():
             if flask_login.current_user.worksfromparent:
                 works = list(
                     map(int,
-                        flask_login.current_user.worksfromparent.split(", ")[1:]))
+                        flask_login.current_user.worksfromparent.split(", ")[
+                        1:]))
             for e in works:
                 work = db_ses.query(Vacancy).filter(Vacancy.id == e).first()
                 one_work = (
-                work.name, work.minimal_age, work.town, work.salary,
-                len(work.description), work.id)
+                    work.name, work.minimal_age, work.town, work.salary,
+                    len(work.description), work.id)
                 data_works.append(one_work)
         else:
             works = db_ses.query(Vacancy).all()
             for e in works:
                 work = e
                 one_work = (
-                work.name, work.minimal_age, work.town, work.salary,
-                len(work.description), work.id)
+                    work.name, work.minimal_age, work.town, work.salary,
+                    len(work.description), work.id)
                 data_works.append(one_work)
         pages = len(data_works) // 12
         if pages * 12 < len(data_works):
@@ -525,16 +571,15 @@ def vacancy():
         print(vac, flask_login.current_user.role)
         if flask_login.current_user.role == "option2":
             print("qwertyuiop")
-            if db_ses.query(User).filter_by(
-                    id=flask_login.current_user.child).first().worksfromparent:
-                print("qwertyuio")
-                db_ses.query(User).filter_by(
-                    id=flask_login.current_user.child).first().worksfromparent += f', {vac.id}'
-            else:
-                print("qwertyuiol;'")
-                db_ses.query(User).filter_by(
-                    id=flask_login.current_user.child).first().worksfromparent = f', {vac.id}'
+            for id_child in flask_login.current_user.child.split(', ')[1:]:
+                print(id_child)
+                child = db_ses.query(User).filter_by(id=id_child).first()
+                if child.worksfromparent:
+                    child.worksfromparent += f', {vac.id}'
+                else:
+                    child.worksfromparent = f', {vac.id}'
             db_ses.commit()
+
             return redirect('/vacancies')
         else:
             data_works = []
@@ -542,8 +587,8 @@ def vacancy():
             for e in works:
                 work = e
                 one_work = (
-                work.name, work.minimal_age, work.town, work.salary,
-                len(work.description), work.id)
+                    work.name, work.minimal_age, work.town, work.salary,
+                    len(work.description), work.id)
                 data_works.append(one_work)
             return render_template("vacancies.html", vacancies=data_works,
                                    count=len(data_works))
@@ -644,8 +689,13 @@ def accept_parent():
     if list(login)[0] == "delete":
         flask_login.current_user.parentreq = None
     elif list(login)[0] == "accept":
-        db_ses.query(User).filter_by(
-            id=flask_login.current_user.parentreq).first().child = flask_login.current_user.id
+        parent = db_ses.query(User).filter_by(
+            id=flask_login.current_user.parentreq).first()
+
+        if parent.child:
+            parent.child = parent.child + f', {flask_login.current_user.id}'
+        else:
+            parent.child = f', {flask_login.current_user.id}'
         flask_login.current_user.parent = flask_login.current_user.parentreq
         flask_login.current_user.parentreq = None
         db_ses.commit()
