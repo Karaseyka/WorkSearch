@@ -56,7 +56,7 @@ def registration_post():
     if request.form['password'] == request.form['passwordSec']:
         pw = generate_password_hash(request.form["password"])
         user = User(password=str(pw), name=request.form["name"],
-                    email=request.form["email"], role=request.form['radios'])
+                    email=request.form["email"].lower(), role=request.form['radios'])
         try:
             db_ses.add(user)
             db_ses.commit()
@@ -79,6 +79,7 @@ def registration_get():
 @app.route("/enter", methods=["POST"])
 def enter_post():
     login = request.form.get("email")
+    login = login.lower()
     pw = request.form.get("password")
     if login and pw:
         user = db_ses.query(User).filter_by(email=login).first()
@@ -88,6 +89,7 @@ def enter_post():
             return render_template("instruction.html", db_ses=db_ses,
                                    Vacancy=Vacancy, User=User)
         else:
+            flash("Неверный логин или пароль. Повторите попытку.", category="text-danger")
             return render_template("enter.html")
 
     else:
@@ -714,4 +716,4 @@ def get_vacancies():
 
 if __name__ == "__main__":
     app.register_blueprint(api.blueprint)
-    app.run(debug=True)
+    app.run(debug=False)
