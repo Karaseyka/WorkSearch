@@ -1,7 +1,7 @@
 from io import BytesIO
 from data.api import api
 import flask_login
-from flask import Flask, render_template, redirect, send_file, url_for, flash
+from flask import Flask, render_template, redirect, send_file, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user
 from flask import request
@@ -32,7 +32,6 @@ def load_user(user_id):
 @login_required
 def logout():
     logout_user()
-    flash("You have been logged out.")
     return redirect(url_for('welcome_page'))
 
 
@@ -64,14 +63,18 @@ def registration_post():
             return redirect("/profile")
         except:
             db_ses.rollback()
-            return "Такой email уже существует"
+            flash("Такой email уже существует")
+            return render_template("registration.html", flash_style="text-danger")
+
 
     else:
-        return "Пароли не совпадают"
+        flash("Пароли не совпадают")
+        return render_template("registration.html", flash_style="text-danger")
 
 
 @app.route("/registration", methods=["GET"])
 def registration_get():
+    clear_flash()
     return render_template("registration.html")
 
 
@@ -89,8 +92,9 @@ def enter_post():
             return render_template("instruction.html", db_ses=db_ses,
                                    Vacancy=Vacancy, User=User)
         else:
-            flash("Неверный логин или пароль. Повторите попытку.", category="text-danger")
-            return render_template("enter.html")
+
+            flash("Неверный логин или пароль. Повторите попытку.")
+            return render_template("enter.html", category="text-danger")
 
     else:
         return render_template("enter.html")
@@ -98,6 +102,7 @@ def enter_post():
 
 @app.route("/enter", methods=["GET"])
 def enter_get():
+    clear_flash()
     return render_template("enter.html")
 
 
@@ -130,9 +135,13 @@ def profile():
                                                db_ses=db_ses, Vacancy=Vacancy,
                                                User=User)
                     except:
-                        return "Неудалось добавить файл"
+                        flash("Неудалось добавить файл")
+                        return render_template("profile_child.html", flash_style="text-danger")
+
                 else:
-                    return "Нужен .pdf формат"
+                    flash("Нужен .pdf формат")
+                    return render_template("profile_child.html", flash_style="text-danger")
+
             elif len(txt) == 0:
                 flask_login.current_user.name = name
                 flask_login.current_user.email = email
@@ -713,6 +722,9 @@ def unauthorized_request(_):
 def get_vacancies():
     return get('https://worckserch.glitch.me/api/vacancies').json()
 
+def clear_flash():
+    if '_flashes' in session:
+        session['_flashes'].clear()
 
 if __name__ == "__main__":
     app.register_blueprint(api.blueprint)

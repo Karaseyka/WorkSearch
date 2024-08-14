@@ -57,11 +57,21 @@
                         <div class="form-group mb-5">
                             <label for="passwordSec">Repeat Password</label>
                             <input required type="password" class="form-control" id="passwordSec" name="passwordSec" placeholder="Password">
+                            {%with messages = get_flashed_messages()%}
+                                {%if messages%}
+                                    {%for message in messages%}
+                                        <p class="{{ flash_style }} form-group mb-2">{{ message }}</p>
+                                    {%endfor%}
+                                {%else%}
+                                    <p class="{{ flash_style }} form-group mb-2"><br> <br></p>
+                                {%endif%}
+                            {%endwith%}
                         </div>
-                        <div class="form-check">
+                        <!--<div class="form-check">
                             <input type="checkbox" class="form-check-input" id="exampleCheck1">
                             <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                        </div>
+                        </div>-->
+
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>

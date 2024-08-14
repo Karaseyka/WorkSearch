@@ -29,18 +29,19 @@
                         <div class="form-group mb-5">
                             <label for="password">Password</label>
                             <input required type="password" class="form-control" id="password" name="password" placeholder="Password">
-
-                        </div>
-
-                        {% with messages = get_flashed_messages()%}
+                            {% with messages = get_flashed_messages()%}
                             {%if messages%}
                                 {%for message in messages%}
-                                    <div class="{{ category }}">{{ message }}</div>
+                                    <p class="{{ category }} form-group mb-2">{{ message }}</p>
                                 {%endfor%}
+                            {%else%}
+                                <p class="{{ category }} form-group mb-2"><br> <br></p>
                             {%endif%}
                         {%endwith%}
-                        <button style="text-align:center;float: left;" type="submit" class="btn btn-primary">Submit</button>
+                        </div>
 
+
+                        <button style="text-align:center;" type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
                 <div class="col-4">
