@@ -1,11 +1,15 @@
 from io import BytesIO
 from data.api import api
+from sqlalchemy.orm import with_polymorphic
 import flask_login
 from flask import Flask, render_template, redirect, send_file, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user
 from flask import request
 from data.database import db_session
+from data.models.child import Child
+from data.models.headhunter import Headhunter
+from data.models.parent import Parent
 from data.models.user import User
 from data.models.vacancy import Vacancy
 from requests import get
@@ -54,12 +58,21 @@ def instruction():
 def registration_post():
     if request.form['password'] == request.form['passwordSec']:
         pw = generate_password_hash(request.form["password"])
-        user = User(password=str(pw), name=request.form["name"],
-                    email=request.form["email"].lower(), role=request.form['radios'])
+        role = request.form['radios']
+        if role == "option1":
+            user = Child(password=str(pw), name=request.form["name"],
+                            email=request.form["email"].lower(), role=role)
+        elif role == "option2":
+            user = Parent(password=str(pw), name=request.form["name"],
+                         email=request.form["email"].lower(), role=role)
+        else:
+            user = Headhunter(password=str(pw), name=request.form["name"],
+                         email=request.form["email"].lower(), role=role)
         try:
             db_ses.add(user)
             db_ses.commit()
             login_user(user)
+
             return redirect("/profile")
         except:
             db_ses.rollback()
@@ -722,9 +735,11 @@ def unauthorized_request(_):
 def get_vacancies():
     return get('https://worckserch.glitch.me/api/vacancies').json()
 
+
 def clear_flash():
     if '_flashes' in session:
         session['_flashes'].clear()
+
 
 if __name__ == "__main__":
     app.register_blueprint(api.blueprint)
