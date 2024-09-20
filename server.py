@@ -620,7 +620,10 @@ def vacancy():
         vac = db_ses.query(Vacancy).filter_by(id=date).first()
         owner = db_ses.query(User).filter_by(id=vac.owner).first()
         db_ses.commit()
-        contacts = owner.contacts.split(', ')[1:]
+        if owner.contacts:
+            contacts = owner.contacts.split(', ')[1:]
+        else:
+            contacts = []
         return render_template("vacancy.html", contacts=contacts, vac=vac,
                                current_user=flask_login.current_user,
                                owner=owner, db_ses=db_ses, Vacancy=Vacancy,

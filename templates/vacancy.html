@@ -67,25 +67,24 @@
                             <label class="col-sm-2 col-form-label">
                                 Контакты
                             </label>
-                            {% if owner.contacts == '' %}
-                            <div class="col-sm-10">
-                                <input type="text" readonly
-                                       class="form-control-plaintext"
-                                       value="{{owner.name}} не указал контакты">
 
-                            </div>
-                            {% else %}
                             <div class="col-sm-10">
-                                {% for e in contacts %}
-
                                 <input type="text" readonly
                                        class="form-control-plaintext"
                                        name="contact"
-                                       value="{{ e.split('-')[0] }}:    {{ e.split('-')[1] }}">
+                                       value="Почта:    {{owner.email}}">
+                                {% if contacts %}
+                                    {% for e in contacts %}
 
-                                {% endfor %}
+                                    <input type="text" readonly
+                                           class="form-control-plaintext"
+                                           name="contact"
+                                           value="{{ e.split('-')[0] }}:    {{ e.split('-')[1] }}">
+
+                                    {% endfor %}
+                                {% endif %}
                             </div>
-                            {% endif %}
+
                         </div>
 
                         <div style="display: flex; justify-content: start;">
