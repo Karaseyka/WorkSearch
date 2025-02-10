@@ -59,13 +59,17 @@
                     <button name="start" class="page-bar">«</button>
                     <button name="prev" class="page-bar">‹</button>
                     <div>
-                        {% for n in pages %}
-                            {% if n == current_page %}
-                                <button name="{{n}}" class="page-bar" style="border-bottom: 3px solid green;">{{ n }}</button>
-                            {% else %}
-                                <button name="{{n}}" class="page-bar">{{ n }}</button>
-                            {% endif %}
-                        {% endfor %}
+                        {% if pages %}
+                            {% for n in pages %}
+                                {% if n == current_page %}
+                                    <button name="{{n}}" class="page-bar" style="border-bottom: 3px solid green;">{{ n }}</button>
+                                {% else %}
+                                    <button name="{{n}}" class="page-bar">{{ n }}</button>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <button class="page-bar" style="border-bottom: 3px solid green;">1</button>
+                        {% endif %}
                     </div>
                     <button name="next" class="page-bar">›</button>
                     <button name="end" class="page-bar">»</button>
