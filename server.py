@@ -431,9 +431,12 @@ def vacancies():
                         len(work.description), work.id)
             if fil.lower() in work.name.lower() or fil.lower() in work.town.lower():
                 print(fil, work.name)
-                if not flask_login.current_user.parent or str(
-                        work.id) in flask_login.current_user.worksfromparent.split(
-                    ", "):
+                if flask_login.current_user.role == 'option1':
+                    if not flask_login.current_user.parent or str(
+                            work.id) in flask_login.current_user.worksfromparent.split(
+                        ", "):
+                        data_works.append(one_work)
+                else:
                     data_works.append(one_work)
 
         if fil:
