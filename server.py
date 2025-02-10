@@ -554,6 +554,9 @@ def go_vacancy():
         flask_login.current_user.otkliks = ', ' + ', '.join(new_otkliks)
 
         db_ses.commit()
+        if flask_login.current_user.otkliks == ', ':
+            flask_login.current_user.otkliks = ''
+        db_ses.commit()
         return redirect('/profile')
 
 

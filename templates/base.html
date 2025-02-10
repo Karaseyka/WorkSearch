@@ -67,7 +67,6 @@
     <!--                                    Тут цикл ниже \/. это список все уведомлений.
                             надо также прописать условие: if alerts; на случай если их нет-->
                                         {% if current_user.otkliks %}
-
                                         <form  action="/add_cont" method="post" enctype="multipart/form-data">
                                             {% for e in current_user.otkliks.split(", ")[1::][::-1] %}
                                             <div class="modal-body " style="border-bottom: 1px solid grey;">
