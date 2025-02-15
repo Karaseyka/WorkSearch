@@ -582,7 +582,6 @@ def redact_form():
     vacanciy.salary = salary
     vacanciy.address = address
     vacanciy.town = town
-    # db_sess = db_session.create_session()
     db_ses.add(vacanciy)
     db_ses.commit()
 
